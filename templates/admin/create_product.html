@@ -1,0 +1,111 @@
+
+{% extends "admin/admin_base.html" %}
+{% load static %}
+
+{% block content %}
+
+
+<div class="container">
+    <h3 class="text-center">Create New Product</h3>
+    
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        <div class="mb-3">
+            <label class="form-label">Product Name</label>
+            <input type="text" name="product_name" class="form-control" placeholder="Enter product name" required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Description</label>
+            <textarea name="description" class="form-control" placeholder="Enter description" required></textarea>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Category</label>
+            <select name="category" class="form-select" required>
+                <option value="">Select Category</option>
+                {% for category in categories %}
+                    <option value="{{ category.id }}">{{ category.category_name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Price</label>
+            <input type="number" name="price" class="form-control" placeholder="Enter price" required>
+        </div>
+
+
+        <!-- <div>
+            <button type="button" class="btn btn-primary mt-2" id="addImageButton" onclick="ProductVariants.addFileInput()">
+                <i class="fas fa-plus-circle"></i> Add More Images
+            </button>
+        </div> -->
+
+
+        <!-- <div class="mb-3">
+            <label class="form-label">Offer</label>
+            <input type="text" name="offer" class="form-control" placeholder="Enter offer details">
+        </div> -->
+        <br><hr><br>
+        <div class="mb-3">
+            <label for="ripeness" class="form-label">Ripeness</label>
+            <select id="ripeness" name="ripeness" class="form-select" required>
+                {% for value, label in ripeness_choices %}
+                    <option value="{{ value }}">{{ label }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Stock</label>
+            <input type="number" name="available_stock" class="form-control" placeholder="Enter stock quantity" required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Upload Images</label>
+            <input type="file" name="images" multiple required>
+        </div>
+
+
+
+
+        <div class="d-flex justify-content-between">
+            <button type="submit" class="btn btn-primary">Submit</button>
+            <a href="{% url 'admin_products' %}" class="btn btn-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}
+<!-- 
+<script>
+     addFileInput() {
+            const container = document.getElementById('variantImagesContainer');
+            const newFileInputDiv = document.createElement('div');
+            newFileInputDiv.className = 'custom-file mb-3 styled-input';
+
+            const newInput = document.createElement('input');
+            newInput.type = 'file';
+            newInput.className = 'custom-file-input variant-image';
+            newInput.id = `imageInput${fileInputCount + 1}`;
+            newInput.name = `image${fileInputCount + 1}[]`;
+            newInput.accept = 'image/*';
+            newInput.onchange = function() { resetFileInputLabel(this); };
+
+            const newLabel = document.createElement('label');
+            newLabel.className = 'custom-file-label btn btn-outline-primary';
+            newLabel.setAttribute('for', newInput.id);
+            newLabel.textContent = `Choose Image ${fileInputCount + 1} (Optional)`;
+
+            newFileInputDiv.appendChild(newInput);
+            newFileInputDiv.appendChild(newLabel);
+            container.appendChild(newFileInputDiv);
+
+            fileInputCount++;
+            
+            this.setupExistingFileInputs();
+        }
+
+       
+</script> -->

@@ -1,0 +1,53 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment
+venv/
+.env/
+*.venv/
+
+# Django-specific
+*.log
+local_settings.py
+/db.sqlite3
+/db.sqlite3-journal
+
+# Media and static files
+/media/
+/staticfiles/
+/static/
+
+# Django migrations
+*/migrations/*
+!*/migrations/__init__.py
+
+# IDE and editor specific files
+.vscode/
+.idea/
+*.swp
+*.swo
+*.sublime-project
+*.sublime-workspace
+
+# Environment variables and secrets
+.env
+*.env
+
+# Python packaging
+*.egg-info/
+*.egg
+build/
+dist/
+
+# Docker
+*.pid
+
+# MacOS
+.DS_Store
+
+# Other
+*.bak
+*.orig
+*.log

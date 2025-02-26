@@ -1,0 +1,42 @@
+{% extends "admin/admin_base.html" %}
+
+{% block content %}
+
+<div class="container  col-lg w-auto m-4" style="max-width: 100%;"">
+    <h2>Manage Variants for {{ product.product_name }}</h2>
+    <a href="{% url 'admin_products' %}" class="btn btn-secondary mb-3">Back to Products</a>
+
+    <div class="row">
+        {% for variant in variants %}
+            <div class="col-lg-6 " >
+                <div class="card {% if not variant.is_active %}bg-secondary{% else %}bg-dark{% endif %} text-white mb-3">
+                    <div class="card-body text-center py-xl-5">
+                        <div class="mb-2">
+                            {% for image in variant.images.all %}
+                                <img src="{{ image.image.url }}" alt="Variant Image" class="img-thumbnail" width="100">
+                            {% empty %}
+                                <p class="text-warning">No images available.</p>
+                            {% endfor %}
+                        </div>
+
+                        <h5 class="card-title">Ripeness: {{ variant.ripeness }}</h5>
+                        <p class="card-text"><strong>Stock:</strong> {{ variant.stock }}</p>
+                        <p class="card-text"><strong>Status:</strong> {% if variant.is_active %} Active {% else %} Disabled {% endif %}</p>
+
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'toggle_variant_status' variant.id %}" class="btn {% if variant.is_active %}btn-warning{% else %}btn-primary{% endif %}">
+                                {% if variant.is_active %} Disable {% else %} Enable {% endif %}
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <p class="text-center text-white">No variants available.</p>
+        {% endfor %}
+    </div>
+
+    <a href="{% url 'add_variant' product.id %}" class="btn btn-primary mt-3">Add Variant</a>
+</div>
+
+{% endblock %}

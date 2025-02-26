@@ -1,0 +1,194 @@
+{% load static %}
+
+<!-- navbar and sidebar -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fruitzy Admin Panel</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+    
+</head>
+
+<style>
+    body {
+    background-color: #121212;
+    color: white;
+}
+nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 9999; /* Ensure it stays on top */
+        } 
+
+.sidebar {
+    /* position: fixed; */
+    width: 400px;   
+    /* height: 100; */
+    background-color: #1e1e2f;
+    padding: 15px;
+}
+
+.sidebar .nav-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    border-radius: 5px;
+    transition: background 0.3s;
+}
+
+.sidebar .nav-link:hover,
+.sidebar .nav-link.active {
+    background-color: #343a40;
+}
+
+.content {
+    padding: 20px;
+}
+
+.table-dark th,
+.table-dark td {
+    color: white;
+}
+
+.btn-danger {
+    background-color: #ff4d4d;
+    border: none;
+}
+
+.btn-success {
+    background-color: #28a745;
+    border: none;
+}
+
+/* create_product */
+
+body {
+            background-color: #121212;
+            color: white;
+        }
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #1e1e1e;
+            border-radius: 10px;
+        }
+        .form-control, .form-select {
+            background: #252525;
+            color: white;
+            border: 1px solid #333;
+        }
+        .btn-primary {
+            background: #007bff;
+            border: none;
+        }
+        .btn-secondary {
+            background: #444;
+            border: none;
+        }
+        .btn-secondary:hover {
+            background: #555;
+        }
+
+        /* category */
+        .container_category {
+            width: 90%;
+            margin : 20px
+        }
+
+</style>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href='{% url "admin_dashboard" %}'>Fruitzy Admin</a>
+            <a href='{% url "admin_logout" %}' class="btn btn-danger">Logout</a>
+        </div>  
+    </nav>
+
+    <div class="d-flex">
+        <!-- Sidebar -->
+        <div class="sidebar text-white p-3 bg-dark" style="width: 250px; min-height: 100vh;">
+            <!-- <h5 class="text-center">Admin Panel</h5> -->
+            <br>
+            <ul class="nav flex-column">
+                <li class="nav-item"><a href='{% url "admin_dashboard" %}' class="nav-link text-white active"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                <li class="nav-item"><a href='{% url "user_management" %}' class="nav-link text-white"><i class="fas fa-users"></i> Users</a></li>
+                <li class="nav-item"><a href = '{% url "admin_products" %}' class="nav-link text-white"><i class="fas fa-box" ></i> Products</a></li>
+                <li class="nav-item"><a href='{% url "admin_category" %}' class="nav-link text-white"><i class="fas fa-list"></i> Category</a></li>
+                <li class="nav-item"><a href="#" class="nav-link text-white"><i class="fas fa-shopping-cart"></i> Orders</a></li>
+            </ul>
+        </div>
+
+    <!-- Main Content -->
+    {% block content %}
+
+
+    {% endblock %}
+
+
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
+    <!-- <script src="script.js"></script> -->
+</body>
+</html>
+<script>
+
+$(document).ready(function() {
+    $('#productTable').DataTable();
+
+    // $('.btn-danger').click(function() {
+    //     if (confirm("Are you sure you want to log out?")) {
+    //         window.location.href = "/logout"; // Change this URL as needed
+    //     }
+    // });
+
+    // $('.btn-primary').click(function() {
+    //     alert("Edit button clicked!");
+    // });
+
+    // $('.btn-danger').click(function() {
+    //     alert("List button clicked!");
+    // });
+});
+
+</script>
+<!-- 
+<script>
+    function confirmBlockUnblock(event, action) {
+        event.preventDefault(); // Prevent form submission
+        
+        let title = action === "block" ? "Block User?" : "Unblock User?";
+        let text = action === "block" ? "The user will be blocked!" : "The user will be unblocked!";
+        let confirmButtonText = action === "block" ? "Yes, block!" : "Yes, unblock!";
+        let confirmButtonColor = action === "block" ? "#d33" : "#28a745";
+
+        Swal.fire({
+            title: title,
+            text: text,
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: confirmButtonColor,
+            cancelButtonColor: "#3085d6",
+            confirmButtonText: confirmButtonText,
+            cancelButtonText: "Cancel"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById("actionInput").value = action; // Set action
+                document.getElementById("blockUnblockForm").submit(); // Submit form
+            }
+        });
+    }
+</script> -->

@@ -1,0 +1,157 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Signup Page</title>
+<link
+  href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css"
+  rel="stylesheet"
+  id="bootstrap-css"
+/>
+
+    <!--Bootsrap 4 CDN-->   <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+      integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+      crossorigin="anonymous"
+    />
+
+    <!--Fontawesome CDN-->
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.3.1/css/all.css"
+      integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU"
+      crossorigin="anonymous"
+    />
+
+    <!--Custom styles--> 
+    <link rel="stylesheet" type="text/css" href="{% static '/css/login.css' %}" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="d-flex justify-content-center h-100">
+        <div class="card signup-body">
+          <div class="card-header">
+            <h3 class="text-center">Sign up</h3>
+            <!-- <div class="d-flex justify-content-end social_icon">
+					<span><i class="fab fa-facebook-square"></i></span>
+					<span><i class="fab fa-google-plus-square"></i></span>
+					<span><i class="fab fa-twitter-square"></i></span>
+				</div> -->
+          </div>
+          <div class="card-body" id="signup-body">
+            <form action="" method="post">
+              {% csrf_token %}
+              <div class="input-group form-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text"
+                    ><i class="fas fa-user"></i
+                  ></span>
+                </div>
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="username"
+                  name = "username"
+                />
+              </div>
+              
+              <span class = "signup_error">
+              {% if errors.username_error %}
+              {{errors.username_error }}
+              {% endif %}
+              </span>
+
+              <div class="input-group form-group mt-4">
+                <div class="input-group-prepend">
+                  <span class="input-group-text"
+                    ><i class="fas fa-solid fa-envelope"></i
+                  ></span>
+                </div>
+                <input type="email" class="form-control" placeholder="email"  name = "email" />
+              </div>
+
+              <span class = "signup_error">
+              {% if errors.email_error %}
+              {{errors.email_error}}
+              {% endif %}
+              </span>
+
+              <div class="input-group form-group mt-4">
+                <div class="input-group-prepend">
+                  <span class="input-group-text"
+                    ><i class="fas fa-key"></i
+                  ></span>
+                </div>
+                <input
+                  type="password"
+                  class="form-control"
+                  placeholder="password"
+                  name="pass1"
+                />
+              </div>
+              <span class = "signup_error">
+              {% if errors.password_error %}
+              {{errors.password_error}}
+              {% endif %}
+              </span>
+
+              <div class="input-group form-group mt-4">
+                <div class="input-group-prepend">
+                  <span class="input-group-text"
+                    ><i class="fas fa-key"></i
+                  ></span>
+                </div>
+                <input
+                  type="password"
+                  class="form-control"
+                  placeholder="confirm password"
+                  name = "pass2"
+                />
+              </div>
+              <!-- <div class="row align-items-center remember">
+						<input type="checkbox">Remember Me
+					</div> -->
+          <span class = "signup_error">
+
+            {% if errors.password_mismatch %}
+            {{errors.password_mismatch}}
+            {% endif %}
+          
+          </span>
+              <div class="form-group text-center mt-4">
+                <input
+                  type="submit"
+                  value="Create"
+                  class="btn text-bold login_btn"
+                />
+              </div>
+            </form>
+
+            {% load socialaccount %}
+
+<div class="container text-center mt-4">
+    <!-- Google Sign-Up Button -->
+    <a href="{% provider_login_url 'google' %}" class="btn btn-primary d-flex align-items-center justify-content-center mx-auto" style="width: 250px; padding: 10px; border-radius: 50px;">
+        <i class="fa-brands fa-google text-white me-2"></i> Sign up with Google
+    </a>
+</div>
+
+
+          <div class="card-footer">
+            <div class="d-flex justify-content-center links">
+              Already have an account?<a href="{% url 'user_login' %}">Sign In</a>
+          </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+
+  </body>
+</html>

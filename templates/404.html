@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - Page Not Found</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #82ae46;
+            font-family: 'Arial', sans-serif;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .container {
+            text-align: center;
+            color: white;
+            position: relative;
+        }
+
+        .error-text {
+            font-size: 180px;
+            font-weight: bold;
+            text-shadow: 4px 4px 0 rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .tomato {
+            width: 120px;
+            height: 120px;
+            background: #ff6347;
+            border-radius: 50%;
+            position: relative;
+            display: inline-block;
+            animation: rotate 4s infinite linear;
+            box-shadow: 0 0 20px rgba(0,0,0,0.2);
+        }
+
+        .leaf {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            width: 30px;
+            height: 30px;
+            background: #228B22;
+            border-radius: 0 50% 0 50%;
+            transform: rotate(45deg);
+        }
+
+        .message {
+            font-size: 24px;
+            margin-top: 20px;
+            opacity: 0;
+            animation: fadeIn 1s forwards 0.5s;
+        }
+
+        .back-btn {
+            margin-top: 30px;
+            padding: 15px 30px;
+            font-size: 18px;
+            background: white;
+            color: #82ae46;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            opacity: 0;
+            animation: fadeIn 1s forwards 1s;
+        }
+
+        .back-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .particles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: rgba(255,255,255,0.5);
+            border-radius: 50%;
+            animation: float 3s infinite linear;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-100vh) rotate(720deg); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="particles">
+        
+    </div>
+    <div class="container">
+        <div class="error-text">
+            4
+            <div class="tomato">
+                <div class="leaf"></div>
+            </div>
+            4
+        </div>
+        <div class="message">Oops! Looks like this page is missing.</div>
+        <button class="back-btn" onclick="window.history.back()">Go Back</button>
+    </div>
+
+    <script>
+        // Create floating particles
+        const particles = document.querySelector('.particles');
+        for (let i = 0; i < 20; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.animationDelay = Math.random() * 2 + 's';
+            particles.appendChild(particle);
+        }
+    </script>
+</body>
+</html>

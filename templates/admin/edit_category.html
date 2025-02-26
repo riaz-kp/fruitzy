@@ -1,0 +1,46 @@
+{% extends "admin/admin_base.html" %}
+
+{% block content %}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>Edit Category</h2>
+        <a href= '{% url "admin_category" %}' class="btn btn-secondary">Back</a>
+    </div>
+    <div class="container bg-dark p-4 rounded">
+        <form method="POST" action="{% url 'edit_category' category.id %}" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="categoryName">Category Name</label>
+                <input type="text" class="form-control" id="categoryName" name="category_name" value="{{ category.category_name }}" required>
+            </div>
+            <br>
+            
+            <!-- <div class="form-group">
+              <label for="categoryUnit">Category Unit</label>
+              <select id="categoryUnit" name="category_unit" class="form-control">
+                  {% for unit in units %}
+                      <option value="{{ unit }}" {% if unit == category.category_unit %}selected{% endif %}>{{ unit }}</option>
+                  {% endfor %}
+              </select>
+          </div> -->
+          <br>
+            <button type="submit" class="btn btn-success">Update Category</button>
+            <a href="{% url 'admin_category' %}" class="btn btn-secondary">Cancel</a>
+        </form>
+        {% if messages %}
+    <div>
+        {% for message in messages %}
+            <div class="alert {% if message.tags %}alert-{{ message.tags }}{% else %}alert-info{% endif %} alert-dismissible fade show"  role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+
+        {% endfor %}
+    </div>
+        {% endif %}
+
+    </div>
+</div>
+
+{% endblock %}
