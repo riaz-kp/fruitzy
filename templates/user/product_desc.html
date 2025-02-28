@@ -64,21 +64,25 @@
                     </div>
                 </div>
 
-                <div class="input-group col-md-6 d-flex mb-3">
-                    <span class="input-group-btn mr-2">
-                        <button type="button" class="quantity-left-minus btn" data-type="minus" data-field="">
-                            <i class="ion-ios-remove"></i>
-                        </button>
-                    </span>
-                    <input type="text" id="quantity" name="quantity" class="form-control input-number" value="1" min="1" max="100">
-                    <span class="input-group-btn ml-2">
-                        <button type="button" class="quantity-right-plus btn" data-type="plus" data-field="">
-                            <i class="ion-ios-add"></i>
-                        </button>
-                    </span>
-                </div>
-
-                <p><a href="#" class="btn btn-black py-3 px-5">Add to Cart</a></p>
+                <form method="POST" action="{% url 'add_to_cart' product.id %}">
+                    {% csrf_token %}
+                    <div class="input-group col-md-6 d-flex mb-3">
+                        <span class="input-group-btn mr-2">
+                            <button type="button" class="quantity-left-minus btn" data-type="minus" data-field="quantity">
+                                <i class="ion-ios-remove"></i>
+                            </button>
+                        </span>
+                        <input type="number" id="quantity" name="quantity" class="form-control input-number" value="1" min="1" max="100">
+                        <span class="input-group-btn ml-2">
+                            <button type="button" class="quantity-right-plus btn" data-type="plus" data-field="quantity">
+                                <i class="ion-ios-add"></i>
+                            </button>
+                        </span>
+                    </div>
+                
+                    <button type="submit" class="btn btn-success py-3 px-5">Add to Cart</button>
+                </form>
+                
             </div>
         </div>
     </div>
@@ -88,6 +92,31 @@
     function changeMainImage(imageUrl) {
         document.getElementById('mainImage').src = imageUrl;
     }
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+    const minusBtn = document.querySelector(".quantity-left-minus");
+    const plusBtn = document.querySelector(".quantity-right-plus");
+    const quantityInput = document.querySelector("#quantity");
+
+    minusBtn.addEventListener("click", function (e) {
+        e.preventDefault();
+        let quantity = parseInt(quantityInput.value);
+        if (quantity > 1) {
+            quantityInput.value = quantity - 1;
+        }
+    });
+
+    plusBtn.addEventListener("click", function (e) {
+        e.preventDefault();
+        let quantity = parseInt(quantityInput.value);
+        if (quantity < 100) {
+            quantityInput.value = quantity + 1;
+        }
+    });
+});
+
 </script>
 
 {% endblock %}

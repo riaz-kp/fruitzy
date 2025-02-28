@@ -4,8 +4,11 @@
 
 <div class="container  col-lg w-auto m-4" style="max-width: 100%;"">
     <h2>Manage Variants for {{ product.product_name }}</h2>
-    <a href="{% url 'admin_products' %}" class="btn btn-secondary mb-3">Back to Products</a>
 
+    <div class="d-flex justify-content-between align-items-center">
+        <a href="{% url 'admin_products' %}" class="btn btn-secondary mb-3">Back to Products</a>
+        <a href="{% url 'add_variant' product.id %}" class="btn btn-success m-3">+ Add Variant</a>
+    </div>
     <div class="row">
         {% for variant in variants %}
             <div class="col-lg-6 " >
@@ -20,7 +23,7 @@
                         </div>
 
                         <h5 class="card-title">Ripeness: {{ variant.ripeness }}</h5>
-                        <p class="card-text"><strong>Stock:</strong> {{ variant.stock }}</p>
+                        <p class="card-text"><strong>Stock:</strong> {{ variant.stock }}{{ product.product_unit }}</p>
                         <p class="card-text"><strong>Status:</strong> {% if variant.is_active %} Active {% else %} Disabled {% endif %}</p>
 
                         <div class="d-flex justify-content-between">
@@ -36,7 +39,6 @@
         {% endfor %}
     </div>
 
-    <a href="{% url 'add_variant' product.id %}" class="btn btn-primary mt-3">Add Variant</a>
 </div>
 
 {% endblock %}

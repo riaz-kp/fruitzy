@@ -6,7 +6,7 @@
         <h2>Create Variant</h2>
     </div>
     <div class="container bg-dark p-4 rounded">
-        <form action="#" method="POST" enctype="multipart/form-data">
+        <form id="variantForm" action="{% url 'add_variant' product.id %}" method="POST" enctype="multipart/form-data">
             {% csrf_token %}
             
             <!-- Hidden field to store product ID -->
@@ -16,19 +16,7 @@
                 <label class="form-label">Product</label>
                 <input type="text" class="form-control text-bg-warning" value="{{ product.product_name }}" disabled>
             </div>
-<!-- 
-            <div class="mb-3">
-                <label for="ripeness" class="form-label">Ripeness</label>
-                <input type="text" id="ripeness" name="ripeness" class="form-control" required>
-            </div> -->
 
-            <!-- <div class="mb-3">
-                <label for="organic" class="form-label">Organic</label>
-                <select id="organic" name="organic" class="form-select" required>
-                    <option value="True">Yes</option>
-                    <option value="False">No</option>
-                </select>
-            </div> -->
             <div class="mb-3">
                 <label for="ripeness" class="form-label">Ripeness</label>
                 <select id="ripeness" name="ripeness" class="form-select" required>
@@ -45,9 +33,113 @@
 
             <div class="mb-3">
                 <label class="form-label">Upload Images</label>
-                <input type="file" name="images" multiple>
+                <input type="file" id="imageInput" name="images" multiple>
             </div>
-            <div class="d-flex align-content-center justify-content-center">
-                <button type="submit" class="btn btn-success">
 
-                {% endblock %}  
+            <!-- Cropper.js Containers for Multiple Images -->
+            <div id="cropperContainers"></div>
+
+            <div class="d-flex align-content-center justify-content-center">
+                <button type="submit" class="btn btn-success">Submit</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Include Cropper.js CSS and JS -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const imageInput = document.getElementById('imageInput');
+        const cropperContainers = document.getElementById('cropperContainers');
+        const variantForm = document.getElementById('variantForm');
+
+        let croppers = []; // Store Cropper instances for each image
+        let croppedFiles = []; // Store cropped files
+
+        imageInput.addEventListener('change', function (e) {
+            const files = e.target.files;
+            if (files && files.length > 0) {
+                // Clear previous cropper containers
+                cropperContainers.innerHTML = '';
+
+                // Initialize Cropper for each image
+                Array.from(files).forEach((file, index) => {
+                    const reader = new FileReader();
+
+                    reader.onload = function (event) {
+                        // Create a container for each image and its cropper
+                        const container = document.createElement('div');
+                        container.className = 'cropper-container mb-3';
+                        container.innerHTML = `
+                            <div class="mb-2">
+                                <img id="cropperImage-${index}" src="${event.target.result}" alt="Selected Image" style="max-width: 100%;">
+                            </div>
+                            <div class="mb-2">
+                                <button type="button" class="cropButton btn btn-primary" data-index="${index}">Crop Image ${index + 1}</button>
+                            </div>
+                        `;
+                        cropperContainers.appendChild(container);
+
+                        // Initialize Cropper for this image
+                        const imageElement = document.getElementById(`cropperImage-${index}`);
+                        const cropper = new Cropper(imageElement, {
+                            aspectRatio: 1, // Set your desired aspect ratio
+                            viewMode: 1,
+                            autoCropArea: 0.8,
+                        });
+
+                        // Store the Cropper instance
+                        croppers[index] = cropper;
+                    };
+
+                    reader.readAsDataURL(file);
+                });
+            }
+        });
+
+        // Handle cropping for each image
+        cropperContainers.addEventListener('click', function (e) {
+            if (e.target.classList.contains('cropButton')) {
+                const index = e.target.getAttribute('data-index');
+                const cropper = croppers[index];
+
+                if (cropper) {
+                    const croppedCanvas = cropper.getCroppedCanvas();
+                    croppedCanvas.toBlob(function (blob) {
+                        const file = new File([blob], imageInput.files[index].name, { type: blob.type });
+
+                        // Store the cropped file
+                        croppedFiles[index] = file;
+
+                        // Update the image preview with the cropped version
+                        const imageElement = document.getElementById(`cropperImage-${index}`);
+                        imageElement.src = URL.createObjectURL(file);
+                    });
+                }
+            }
+        });
+
+        // Handle form submission
+        variantForm.addEventListener('submit', function (e) {
+            // Append cropped files to FormData
+            const formData = new FormData(variantForm);
+
+            // Remove the original files from FormData
+            formData.delete('images');
+
+            // Append cropped files to FormData
+            croppedFiles.forEach((file, index) => {
+                if (file) {
+                    formData.append('images', file, file.name);
+                }
+            });
+
+            // Submit the form using traditional submission
+            variantForm.submit();
+        });
+    });
+</script>
+{% endblock %}

@@ -12,6 +12,10 @@ urlpatterns = [
     path('',include('products.urls')),
     path('',include('category.urls')),
     path('adminn/',include('admin_panel.urls')),
+    path('',include('cart.urls')),
+    path('',include('orders.urls')),
+
+
     path('accounts/', include('allauth.urls')),   #all auth
 
 

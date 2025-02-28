@@ -2,6 +2,8 @@ from django.shortcuts import render,redirect,get_object_or_404
 from .models import Product, Images, Variant
 from category.models import Category
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.db.models import Sum
 
 import re
 
@@ -14,9 +16,9 @@ def user_products(request, category_id=None):
     
     if category_id:
         selected_category = get_object_or_404(Category, id=category_id)
-        products = Product.objects.filter(category=selected_category)
+        products = Product.objects.filter(category=selected_category ,is_listed=True)
     else:
-        products = Product.objects.filter(category__is_listed=True)
+        products = Product.objects.filter(category__is_listed=True ,is_listed=True)
 
     return render(request, 'user/shop.html', {
         'categories': categories,
@@ -37,10 +39,17 @@ def product_desc(request, variant_id):
     return render(request, 'user/product_desc.html', {'variant': variant,"product":product})
 
 
+@login_required
+def products (request):
+    # products = Product.objects.all()
+    products = Product.objects.annotate(total_stock=Sum('variants__stock')).order_by('id')
 
-def create_product(request):
+    context = {
+        'products' : products
+    }
 
-    return render(request,'admin/create_product.html')
+    return render (request,'admin/products.html',context)
+
  
 def create_product(request):
     if request.method == "POST":
@@ -51,16 +60,23 @@ def create_product(request):
         price = request.POST.get("price")
         # ripeness = request.POST.get('ripeness')
         images = request.FILES.getlist("images")
-        is_listed = request.POST.get("is_listed") == "on"
+        # is_listed = request.POST.get("is_listed") == "on"
         
         category = get_object_or_404(Category, id=category_id)
+        product_unit = request.POST.get("product_unit") 
+        
+        if Product.objects.filter(product_name__iexact=product_name).exists():
+            messages.error(request, f"The Product name '{product_name}' already exists.")
+            return redirect(create_product)
+        
         
         product = Product.objects.create(
             product_name=product_name,
             description=description,
             category=category,
             price=price,
-            is_listed=is_listed
+            is_listed=True,
+            product_unit=product_unit
         )
         
         variant = Variant.objects.create(
@@ -79,8 +95,9 @@ def create_product(request):
         return redirect("admin_products")  
     
     categories = Category.objects.all()
+    unit_choices = Product.UNIT_CHOICES
     
-    return render(request, "admin/create_product.html", {"categories": categories, "ripeness_choices": Variant.RIPENESS_CHOICES})
+    return render(request, "admin/create_product.html", {"categories": categories, "ripeness_choices": Variant.RIPENESS_CHOICES, 'unit_choices': unit_choices})
 
 
 

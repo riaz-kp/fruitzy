@@ -78,7 +78,7 @@
             <td>{{ product.product_name }}</td>
             <td>{{ product.category }}</td>
             <td>{{ product.price }}</td>
-            <td>{{ product.total_stock | default:0 }}</td>
+            <td>{{ product.total_stock | default:0 }}{{ product.product_unit}}</td>
             <td>
               {% with product.variants.first.images.first as image %}
                   {% if image %}

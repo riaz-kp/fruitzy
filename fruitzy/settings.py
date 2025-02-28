@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     'products',
     'admin_panel',
     'category',
+    'cart',
+    'orders',
 
     'django.contrib.sites',  # Required for allauth
     'allauth',

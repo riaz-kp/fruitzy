@@ -4,6 +4,15 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 
 
+@login_required
+def category_list (request):
+    categories = Category.objects.all()
+    context = {
+        'categories' : categories
+    }
+
+    return render (request,'admin/category.html', context)
+
 
 @login_required
 def create_category (request):
@@ -35,7 +44,6 @@ def edit_category(request, category_id):
 
     if request.method == 'POST':
         category_name = request.POST.get('category_name')
-
         errors = []
 
         if Category.objects.exclude(id=category_id).filter(category_name__iexact=category_name).exists():

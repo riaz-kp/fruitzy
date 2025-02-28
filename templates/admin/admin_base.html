@@ -16,6 +16,45 @@
 </head>
 
 <style>
+
+.custom-alert {
+        position: fixed;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        min-width: 300px;
+        max-width: 500px;
+        padding: 15px;
+        border-radius: 8px;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 16px;
+        font-weight: bold;
+        z-index: 1000;
+        transition: opacity 0.3s ease-in-out;
+    }
+
+    
+    .alert-success { background: #d4edda; color: #155724; }
+    .alert-error { background: #f8d7da; color: #721c24; }
+    .alert-warning { background: #fff3cd; color: #856404; }
+    .alert-info { background: #d1ecf1; color: #0c5460; }
+
+    .close-btn {
+        background: none;
+        border: none;
+        font-size: 18px;
+        font-weight: bold;
+        cursor: pointer;
+        color: inherit;
+        padding: 0 10px;
+    }
+
+
+
+
     body {
     background-color: #121212;
     color: white;
@@ -24,7 +63,7 @@ nav {
             position: fixed;
             top: 0;
             width: 100%;
-            z-index: 9999; /* Ensure it stays on top */
+            z-index: 999; /* Ensure it stays on top */
         } 
 
 .sidebar {
@@ -113,7 +152,16 @@ body {
             <a href='{% url "admin_logout" %}' class="btn btn-danger">Logout</a>
         </div>  
     </nav>
-
+    <div id="alert-container">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="custom-alert alert-error">
+                    <span>{{ message }}</span>
+                    <button class="close-btn" onclick="this.parentElement.style.display='none'">&times;</button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
     <div class="d-flex">
         <!-- Sidebar -->
         <div class="sidebar text-white p-3 bg-dark" style="width: 250px; min-height: 100vh;">
@@ -192,3 +240,4 @@ $(document).ready(function() {
         });
     }
 </script> -->
+
