@@ -47,9 +47,7 @@ class Variant(models.Model):
     is_active = models.BooleanField(default=True)  
 
 
-    def __str__(self):
-        return f"{self.variety} - {self.weight} - {self.ripeness} - {'Organic' if self.organic else 'Non-Organic'} - {self.price}$"
-    
+   
 
 
 class Images(models.Model):

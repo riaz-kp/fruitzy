@@ -4,7 +4,7 @@ from category.models import Category
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db.models import Sum
-
+from admin_panel.decorators import superuser_required
 import re
 
 
@@ -40,6 +40,7 @@ def product_desc(request, variant_id):
 
 
 @login_required
+@superuser_required
 def products (request):
     # products = Product.objects.all()
     products = Product.objects.annotate(total_stock=Sum('variants__stock')).order_by('id')
@@ -51,6 +52,7 @@ def products (request):
     return render (request,'admin/products.html',context)
 
  
+@superuser_required
 def create_product(request):
     if request.method == "POST":
         product_name = request.POST.get("product_name")
@@ -100,7 +102,7 @@ def create_product(request):
     return render(request, "admin/create_product.html", {"categories": categories, "ripeness_choices": Variant.RIPENESS_CHOICES, 'unit_choices': unit_choices})
 
 
-
+@superuser_required
 def edit_product(request, product_id):
     # if not request.user.is_authenticated or not request.user.is_superuser:
     #     return redirect('admin_login') 
@@ -146,7 +148,7 @@ def edit_product(request, product_id):
             
         })
     
-
+@superuser_required
 def toggle_product_listing(request, product_id):
     # if not request.user.is_authenticated or not request.user.is_superuser:
     #     return redirect('admin_login') 
@@ -169,7 +171,7 @@ def manage_variants(request, product_id):
 
     return render(request, 'admin/manage_variants.html', context)
 
-
+@superuser_required
 def add_variant(request, product_id):
     product = get_object_or_404(Product, id=product_id)
 
@@ -202,7 +204,7 @@ def add_variant(request, product_id):
     
     
 
-
+@superuser_required
 def toggle_variant_status(request, variant_id):
     variant = get_object_or_404(Variant, id=variant_id)
     variant.is_active = not variant.is_active  # Toggle active/inactive status

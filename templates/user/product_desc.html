@@ -54,19 +54,23 @@
                         <div class="form-group d-flex">
                             <div class="select-wrap">
                                 <div class="icon"><span class="ion-ios-arrow-down"></span></div>
-                                <select name="variant" id="variant" class="form-control">
-                                    {% for variant in product.variants.all %}
-                                        <option value="{{ variant.id }}">{{ variant.ripeness }}</option>
-                                    {% endfor %}
-                                </select>
+                                <form id="variantForm" method="get" action="{% url 'product_desc' 0 %}">
+                                    <select name="variant" id="variant" class="form-control" onchange="this.form.action=this.value; this.form.submit();">
+                                        <option value="" selected disabled>{{variant.ripeness}}</option>
+                                        {% for variant in product.variants.all %}
+                                            <option value="{% url 'product_desc' variant.id %}">{{ variant.ripeness }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </form>
+                                
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <form method="POST" action="{% url 'add_to_cart' product.id %}">
-                    {% csrf_token %}
-                    <div class="input-group col-md-6 d-flex mb-3">
+                <!-- <form method="POST" action="{% url 'add_to_cart' variant.id %}">
+                    {% csrf_token %} -->
+                    <!-- <div class="input-group col-md-6 d-flex mb-3">
                         <span class="input-group-btn mr-2">
                             <button type="button" class="quantity-left-minus btn" data-type="minus" data-field="quantity">
                                 <i class="ion-ios-remove"></i>
@@ -78,9 +82,9 @@
                                 <i class="ion-ios-add"></i>
                             </button>
                         </span>
-                    </div>
+                    </div> -->
                 
-                    <button type="submit" class="btn btn-success py-3 px-5">Add to Cart</button>
+                    <a href="{% url 'add_to_cart' variant.id %}" type="submit" class="btn btn-success py-3 px-5">Add to Cart</a>
                 </form>
                 
             </div>
@@ -94,29 +98,5 @@
     }
 </script>
 
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-    const minusBtn = document.querySelector(".quantity-left-minus");
-    const plusBtn = document.querySelector(".quantity-right-plus");
-    const quantityInput = document.querySelector("#quantity");
-
-    minusBtn.addEventListener("click", function (e) {
-        e.preventDefault();
-        let quantity = parseInt(quantityInput.value);
-        if (quantity > 1) {
-            quantityInput.value = quantity - 1;
-        }
-    });
-
-    plusBtn.addEventListener("click", function (e) {
-        e.preventDefault();
-        let quantity = parseInt(quantityInput.value);
-        if (quantity < 100) {
-            quantityInput.value = quantity + 1;
-        }
-    });
-});
-
-</script>
 
 {% endblock %}
