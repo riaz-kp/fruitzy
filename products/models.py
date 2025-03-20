@@ -1,5 +1,7 @@
 from django.db import models
 from category.models import Category
+from cloudinary.models import CloudinaryField
+
 
 
 class Product(models.Model):
@@ -52,7 +54,8 @@ class Variant(models.Model):
 
 class Images(models.Model):
 
-    image = models.ImageField(upload_to='uploads/')
+    # image = models.ImageField(upload_to='uploads/')
+    image = CloudinaryField('image')  # Using CloudinaryField instead of ImageField
     variant = models.ForeignKey(Variant, on_delete=models.CASCADE, related_name="images")
 
 

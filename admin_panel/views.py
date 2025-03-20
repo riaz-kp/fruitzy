@@ -38,9 +38,9 @@ def admin_logout(request):
 
 
 @login_required
-@superuser_required
 def admin_dashboard(request):
-
-
-    return render (request,'admin/dashboard.html')
+    if  not request.user.is_superuser:
+        return redirect('admin_login')
+    elif request.user.is_authenticated and  request.user.is_superuser:
+        return render (request,'admin/dashboard.html')
 
