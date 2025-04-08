@@ -58,4 +58,3 @@ class Images(models.Model):
     image = CloudinaryField('image')  # Using CloudinaryField instead of ImageField
     variant = models.ForeignKey(Variant, on_delete=models.CASCADE, related_name="images")
 
-

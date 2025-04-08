@@ -4,6 +4,7 @@ from django.views.decorators.cache import never_cache
 from django.contrib.auth.models import User
 import re
 from django.contrib import messages
+from .models import userProfile
 
 
 
@@ -123,3 +124,14 @@ def block_unblock_user(request,user_id):
 def custom_404_view(request,exception):
     
     return render(request,'404.html',status=404)
+
+
+def user_profile(request):
+    profile, created = userProfile.objects.get_or_create(user=request.user)
+    if request.method == 'POST':
+        profile_picture = request.FILES.get('profile_picture')
+        profile.profile_image = profile_picture
+        profile.save()
+
+
+    return render(request,'user/user_profile.html', {'user':request.user})

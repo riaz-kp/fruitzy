@@ -7,11 +7,11 @@ name = "pypi"
 django = "*"
 requests = "*"
 django-allauth = "*"
-jwt = "*"
 pillow = "*"
 django-cloudinary-storage = "*"
 cloudinary = "*"
 python-dotenv = "*"
+pyjwt = "*"
 
 [dev-packages]
 

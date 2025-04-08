@@ -1,0 +1,47 @@
+
+{% extends 'user/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-3">Your Addresses</h1>
+    <a href="{% url 'add_address' %}" class="btn btn-primary mb-3">Add New Address</a>
+
+    <div class="row">
+        {% for address in addresses %}
+        <div class="col-md-6 col-lg-4 mb-3">
+            <div class="card p-3 shadow-sm">
+                <div class="card-body">
+                    <p class="card-text mb-2">{{ address }}</p>
+                    {% if address.is_default %}
+                        <span class="badge bg-success">Default</span>
+                    {% endif %}
+                </div>
+                <div class="card-footer d-flex justify-content-between">
+                    {% if not address.is_default %}
+                        <a href="{% url 'set_default_address' address.id %}" class="btn btn-sm btn-outline-secondary">
+                            <i class="fas fa-toggle-off"></i> Set Default
+                        </a>
+                    {% else %}
+                        <span class="btn btn-sm btn-outline-success disabled">
+                            <i class="fas fa-toggle-on"></i> Default
+                        </span>
+                    {% endif %}
+                    <div>
+                        <a href="{% url 'edit_address' address.id %}" class="btn btn-sm btn-outline-primary">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                        <a href="{% url 'delete_address' address.id %}" class="btn btn-sm btn-outline-danger">
+                            <i class="fas fa-trash"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- FontAwesome Icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+{% endblock %}

@@ -12,7 +12,7 @@ class Cart(models.Model):
 
     
 class CartItem(models.Model):
-    cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name='items')
     variant = models.ForeignKey(Variant, on_delete=models.CASCADE, related_name='cart_items')
     quantity = models.PositiveBigIntegerField(default=1)
     item_total = models.DecimalField(max_digits=10, decimal_places=2,null=True ,editable=False)

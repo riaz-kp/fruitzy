@@ -1,11 +1,79 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    checkout
+{% extends 'user/base.html' %}
+{% load static %}
+
+{% block content %}
+
+    <div class="container mt-5">
+        <div class="card shadow p-4">
+            <h2 class="text-center mb-4">Checkout</h2>
+            
+            {% if error %}<div class="alert alert-danger">{{ error }}</div>{% endif %}
+            
+            <!-- <h3> Items</h3> -->
+            <table class="table table-bordered ">
+                <thead class="bg-success text-white">
+                    <tr>
+                        <th>Image</th>
+                        <th>Product</th>
+                        <th>Quantity</th>
+                        <th>Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in cart_items %}
+                    <tr>
+                        <td> <img class="img-fluid" style="width: 100px;  height: auto;" src="{{ item.variant.images.first.image.url }}" alt="{{ variant.ripeness }}"></td>
+                        <td><span class="font-weight-bold">{{ item.variant.product |capfirst }} </span>  {{ item.variant.ripeness}}</td>
+                        <td>{{ item.quantity }}</td>
+                        <td>₹{{ item.item_total }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            
+            <h3>Select Address</h3>
+            <form method="POST">
+                {% csrf_token %}
+                <div class="mb-3">
+                    {% for address in addresses %}
+                        <div class="form-check d-flex align-items-center">
+                            <input class="form-check-input me-2" type="radio" name="address" 
+                                value="{{ address.id }}" id="address{{ address.id }}"
+                                {% if address.is_default %}checked{% endif %}>
+                            <label class="form-check-label me-auto" for="address{{ address.id }}">{{ address.address_name }}</label>
+                            <a href="{% url 'edit_address' address.id %}?next=checkout" class="btn btn-sm btn-outline-primary ml-2">
+                            <i class="fas fa-edit"></i>
+                            </a>
+                        </div>
+                    {% endfor %}
+                </div>
+                
+                <!-- Create New Address Button -->
+                <a href="{% url 'add_address' %}?next=checkout" class="btn btn-sm btn-success ">+ Add New Address</a>
+                <br><br><hr><br>
+                
+                <h3>Payment Method</h3>
+                <div class="mb-3">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="payment_method" value="COD" checked>
+                        <label class="form-check-label">Cash on Delivery (COD)</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="payment_method" value="Razorpay" disabled>
+                        <label class="form-check-label text-muted">Razorpay (Coming Soon)</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="payment_method" value="Paypal" disabled>
+                        <label class="form-check-label text-muted">PayPal (Coming Soon)</label>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn btn-success w-100">Place Order</button>
+            </form>
+        </div>
+    </div>
 </body>
-</html>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+{% endblock %}
