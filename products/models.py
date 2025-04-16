@@ -40,6 +40,7 @@ class Variant(models.Model):
         ('Raw', 'Raw'),
         ('Semi-Ripe', 'Semi-Ripe'),
         ('Fully-Ripe', 'Fully-Ripe'),
+        
     ]
 
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="variants")  # ForeignKey for relation

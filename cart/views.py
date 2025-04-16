@@ -60,7 +60,11 @@ def update_cart(request,item_id):
                  'error' : 'You cannot order more than 10 units'
                  }
             )
-        
+        elif quantity> cart_item.variant.stock:
+            return JsonResponse({
+                'success':False,
+                'error': f"{cart_item.variant.product} {cart_item.variant.ripeness} only {cart_item.variant.stock} {cart_item.variant.product.product_unit} available"
+            })
         else:
             # cart_item.quantity <= 10:
             cart_item.quantity = max(1, quantity)

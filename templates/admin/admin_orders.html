@@ -1,0 +1,94 @@
+{% extends "admin/admin_base.html" %}
+{% load static %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Orders</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom styles for enhanced UI */
+        .table-container2 {
+            max-width: 100%;
+            overflow-x: auto;
+        }
+        .status-pending {
+            background-color: #fefcbf;
+            color: #b45309;
+        }
+        .status-processing {
+            background-color: #bfdbfe;
+            color: #1e40af;
+        }
+        .status-shipped {
+            background-color: #bbf7d0;
+            color: #15803d;
+        }
+        .status-delivered {
+            background-color: #d1fae5;
+            color: #047857;
+        }
+        .status-cancelled {
+            background-color: #fecaca;
+            color: #b91c1c;
+        }
+        .action-btn:hover {
+            transform: translateY(-1px);
+        }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans">
+    <div class="container2 w-full m-3   ">
+        <!-- Header -->
+        <h2 class="text-3xl font-bold text-gray-800 mb-6">Manage Orders</h2>
+
+        <!-- Table Container -->
+        <div class="table-container bg-white shadow-lg rounded-lg">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-800 text-white">
+                    <tr>
+                        <th class="px-6 py-4 text-left text-sm font-semibold uppercase tracking-wider">Order ID</th>
+                        <th class="px-6 py-4 text-left text-sm font-semibold uppercase tracking-wider">User</th>
+                        <th class="px-6 py-4 text-left text-sm font-semibold uppercase tracking-wider">Date</th>
+                        <th class="px-6 py-4 text-left text-sm font-semibold uppercase tracking-wider">Grand Total</th>
+                        <th class="px-6 py-4 text-left text-sm font-semibold uppercase tracking-wider">Status</th>
+                        <th class="px-6 py-4 text-left text-sm font-semibold uppercase tracking-wider">More</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200">
+                    {% for order in orders %}
+                    <tr class="hover:bg-gray-50 transition duration-200">
+                        <td class="px-6 py-4 text-gray-700">{{ order.order_id }}</td>
+                        <td class="px-6 py-4 text-gray-700">{{ order.user.username }}</td>
+                        <td class="px-6 py-4 text-gray-700">{{ order.created_at|date:"M d, Y" }}</td>
+                        <td class="px-6 py-4 text-gray-700">{{ order.grand_total }}</td>
+                        <td class="px-6 py-4">
+                            <span class="px-3 py-1 text-sm font-medium text-black rounded-full"> 
+                                {{ order.order_status }}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4">
+                            <a href="{% url 'admin_order_details' order.order_id %}"
+                               class="action-btn inline-block px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-md hover:bg-indigo-700 transition duration-200">
+                                View Details
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="px-6 py-4 text-center text-gray-500">
+                            No orders found.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>
+{% endblock %}

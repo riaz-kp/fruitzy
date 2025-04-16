@@ -10,6 +10,7 @@
 <div class="container my-5">
     <h2 class="text-center mb-4">Shopping Cart</h2>
     
+    {% if cart_items %}
     <table class="table table-bordered text-center">
         <thead class="bg-success text-white">
             <tr>
@@ -39,10 +40,12 @@
                 <td class="item-total" id="item-total-{{ item.id }}">₹{{ item.item_total }}</td>
                 <td><a href="{% url 'remove_cart_item' item.id %}">Remove</a></td>
             </tr>
+
+
             {% endfor %}
+
         </tbody>
     </table>
-
 
 </div>
 
@@ -58,6 +61,12 @@
         <a href='{% url "checkout" %}' class="btn btn-success btn-block mt-2">Proceed to Checkout</a>
     </div>
 </div>
+
+{% else %}
+<span>Your cart is Empty go back to <a href='{% url "user_products" %}'>shop</a></span>
+{% endif %}
+
+
 </div>
 
 

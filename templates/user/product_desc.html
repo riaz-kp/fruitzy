@@ -83,8 +83,15 @@
                             </button>
                         </span>
                     </div> -->
-                
-                    <a href="{% url 'add_to_cart' variant.id %}" type="submit" class="btn btn-success py-3 px-5">Add to Cart</a>
+                    {% if messages %}
+                    {% for message in  messages %}
+
+                    <span style="color: red;">{{message}}</span>
+                    {% endfor %}
+                    {% endif %}
+<br><br>
+
+                    <a href="{% url 'add_to_cart' variant.id %}" type="submit" class="btn btn-success py-3 px-5 {% if not can_add_to_cart %}disabled{% endif %}">Add to Cart</a>
                 </form>
                 
             </div>

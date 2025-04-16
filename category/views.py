@@ -26,12 +26,11 @@ def create_category (request):
 
         if Category.objects.filter(category_name__iexact=category_name).exists():
             messages.error(request, f"The category name '{category_name}' already exists.")
-            return render(request,'admin/create_category.html')
+            return redirect('admin_category')
 
         category = Category.objects.create(category_name=category_name )
         category.save()
-
-
+        return redirect('admin_category')
 
     return render(request,'admin/create_category.html' )
 
@@ -44,15 +43,12 @@ def edit_category(request, category_id):
 
     if request.method == 'POST':
         category_name = request.POST.get('category_name')
-        errors = []
 
         if Category.objects.exclude(id=category_id).filter(category_name__iexact=category_name).exists():
-            errors.append('Category name already exists')
+            messages.error(request, 'Category name already exists')
 
-        if errors:
             return render(request, 'admin/edit_category.html', {
                 'category': category,
-                'errors': errors,
                 'categories': Category.objects.all(),
             })
 

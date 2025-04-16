@@ -1,4 +1,5 @@
 from django.shortcuts import render,redirect,get_object_or_404
+from django.http import JsonResponse
 from .models import Product, Images, Variant
 from category.models import Category
 from django.contrib import messages
@@ -34,9 +35,26 @@ def user_products(request, category_id=None):
 def product_desc(request, variant_id):
     variant = get_object_or_404(Variant, id=variant_id)
     product = variant.product
- 
 
-    return render(request, 'user/product_desc.html', {'variant': variant,"product":product})
+    if variant.stock == 0:
+        messages.error(request,'current item is out of stock')
+        can_add_to_cart = False
+    elif not variant.is_active:
+        messages.error(request, 'current item unavailable now')
+        can_add_to_cart = False
+    elif variant.stock < 10:
+        messages.success(request,f'only {variant.stock} available , hurry up!!!')
+        can_add_to_cart = True
+    else:
+        can_add_to_cart= True
+ 
+    return render(request, 'user/product_desc.html', {
+        'variant': variant,
+        "product":product,
+        'can_add_to_cart':can_add_to_cart
+        })
+
+
 
 
 @login_required
@@ -100,6 +118,8 @@ def create_product(request):
     unit_choices = Product.UNIT_CHOICES
     
     return render(request, "admin/create_product.html", {"categories": categories, "ripeness_choices": Variant.RIPENESS_CHOICES, 'unit_choices': unit_choices})
+
+
 
 
 @superuser_required
@@ -177,15 +197,17 @@ def add_variant(request, product_id):
 
     if request.method == "POST":
         ripeness = request.POST.get("ripeness")
-        # organic = request.POST.get("organic") == "on"  # Checkbox returns "on" when checked
         stock = request.POST.get("stock")
         images = request.FILES.getlist("images")
 
+        if Variant.objects.filter(ripeness=ripeness).exists():
+            messages.error(request, f"The '{ripeness}' already exists.")
+            return redirect("manage_variants", product_id=product.id)  # Redirect to variant list
+        
 
         variant = Variant.objects.create(
             product=product,
             ripeness=ripeness,
-            # organic=organic,
             stock=int(stock)
          )
 

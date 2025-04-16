@@ -1,0 +1,27 @@
+{% extends 'user/base.html' %}
+{% load static %}
+
+{% block content %}
+
+<div class="container text-center mt-5">
+    <div class="card shadow p-5">
+        <div class="mb-4">
+            <i class="fas fa-check-circle fa-5x text-success"></i>
+        </div>
+        <h2 class="text-success">Thank you for your order!</h2>
+        <p class="lead">Your order <strong>#{{ order_id }}</strong> was placed successfully.</p>
+        <p>We'll notify you once it's ready for delivery.</p>
+
+        <div class="mt-4">
+            <a href="{% url 'manage_orders' %}" class="btn btn-primary me-2 ">
+                <i class="fas fa-list"></i> View My Orders
+            </a>
+            <a href="{% url 'home' %}" class="btn btn-outline-success">
+                <i class="fas fa-store"></i> Continue Shopping
+            </a>
+        </div>
+    </div>
+</div>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+{% endblock %}

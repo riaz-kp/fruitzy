@@ -17,6 +17,7 @@
                         <th>Product</th>
                         <th>Quantity</th>
                         <th>Price</th>
+                        <th>Total</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -25,14 +26,36 @@
                         <td> <img class="img-fluid" style="width: 100px;  height: auto;" src="{{ item.variant.images.first.image.url }}" alt="{{ variant.ripeness }}"></td>
                         <td><span class="font-weight-bold">{{ item.variant.product |capfirst }} </span>  {{ item.variant.ripeness}}</td>
                         <td>{{ item.quantity }}</td>
+                        <td>{{ item.variant.product.price }}</td>
                         <td>₹{{ item.item_total }}</td>
                     </tr>
                     {% endfor %}
                 </tbody>
-            </table>
+            <tfoot>
+                <tr>
+                    <td colspan="3" class="text-end fw-bold">Subtotal:</td>
+                    <td>₹{{ total }}</td>
+                </tr>
+                <tr>
+                    <td colspan="3" class="text-end fw-bold">Shipping:</td>
+                    <td>
+                        {% if shipping_charge == 0 %}
+                            <span class="text-success">Free</span>
+                        {% else %}
+                            ₹{{ shipping_charge }}
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr class="bg-light">
+                    <td colspan="3" class="text-end fw-bold">Grand Total:</td>
+                    <td><strong>₹{{ grand_total }}</strong></td>
+                </tr>
+            </tfoot>
+        </table>
+            
             
             <h3>Select Address</h3>
-            <form method="POST">
+            <form method="POST" action='{% url "place_order" %}'>
                 {% csrf_token %}
                 <div class="mb-3">
                     {% for address in addresses %}
@@ -63,8 +86,8 @@
                         <label class="form-check-label text-muted">Razorpay (Coming Soon)</label>
                     </div>
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="payment_method" value="Paypal" disabled>
-                        <label class="form-check-label text-muted">PayPal (Coming Soon)</label>
+                        <input class="form-check-input" type="radio" name="payment_method" value="Wallet" disabled>
+                        <label class="form-check-label text-muted">Wallet (Coming Soon)</label>
                     </div>
                 </div>
                 
