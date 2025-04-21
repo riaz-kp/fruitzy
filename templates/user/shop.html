@@ -48,15 +48,19 @@
                         </div>
                         <div class="bottom-area d-flex px-3">
                             <div class="m-auto d-flex">
-                                <a href="#" class="add-to-cart d-flex justify-content-center align-items-center text-center">
+                                <a href='{% url "product_desc" product.variants.first.id %}'  class="add-to-cart d-flex justify-content-center align-items-center text-center">
                                     <span><i class="ion-ios-menu"></i></span>
                                 </a>
-                                <a href="#" class="buy-now d-flex justify-content-center align-items-center mx-1">
+                                <a href='{% url "add_to_cart" product.variants.first.id %}' class="buy-now d-flex justify-content-center align-items-center mx-1">
                                     <span><i class="ion-ios-cart"></i></span>
                                 </a>
-                                <a href="#" class="heart d-flex justify-content-center align-items-center">
-                                    <span><i class="ion-ios-heart"></i></span>
-                                </a>
+                                <a href="#" 
+                                    class="heart d-flex justify-content-center align-items-center add-to-wishlist" 
+                                    data-product-id="{{ product.id }}" 
+                                    id="wishlist-icon-{{ product.id }}">
+                                        <span><i class="ion-ios-heart"></i></span>
+                                    </a>
+
                             </div>
                         </div>
                     </div>
@@ -68,5 +72,60 @@
         </div>
     </div>
 </section>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const wishlistButtons = document.querySelectorAll('.add-to-wishlist');
+    
+        wishlistButtons.forEach(button => {
+            button.addEventListener('click', function (e) {
+                e.preventDefault();
+                const productId = this.dataset.productId;
+    
+                fetch(`/add_to_wishlist/${productId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // const icon = document.querySelector(`#wishlist-icon-${productId} i`);
+                            // icon.style.color = "red";  // ❤️ Change heart color
+                            Swal.fire({
+                                title: "Success!",
+                                text: data.message,
+                                icon: "success",
+                                timer:'500',
+                                showConfirmButton: false,
+                             
+                            });
+                            const correntValue= parseInt(document.getElementById('wishlist_count').innerText)
+                            console.log(correntValue)
+
+                            
+                            document.getElementById('wishlist_count').textContent=`${correntValue+1}`
+                           
+                        
+                        } else {
+                            (data.message); // or use a toast notification
+                            Swal.fire({
+                                title: "Error!",
+                                text: data.message,
+                                icon: "warning",
+                                timer:'500',
+                                showConfirmButton: false,
+                             
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+            });
+        });
+    });
+    
+    console.log(test)
+    </script>
+    
+
 
 {% endblock %}

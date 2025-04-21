@@ -7,21 +7,19 @@
         <a href= '{% url "admin_category" %}' class="btn btn-secondary">Back</a>
     </div>
     <div class="container bg-dark p-4 rounded">
-        <form action="#" method="POST">
+        <form action="#" method="POST"  enctype="multipart/form-data">
             {% csrf_token %}
             <div class="mb-3">
                 <label for="category_name" class="form-label">Category Name</label>
                 <input type="text" id="category_name" name="category_name" class="form-control" required>
             </div>
-            <!-- <div class="mb-3">
-                <label for="category_unit" class="form-label">Category Unit</label>
-                <select id="category_unit" name="category_unit" class="form-select" required>
 
-                    {% for value, label in category_unit %}
-                    <option value="{{ value }}">{{ label }}</option> 
-                {% endfor %} 
-                </select>   
-            </div> -->
+            <div class="mb-3">
+                <label for="category_image" class="form-label">Category Image</label>
+                <input type="file" id="category_image" name="category_image" class="form-control" accept="image/*" required>
+            </div>
+
+
             <div class="d-flex align-content-center justify-content-center">
                 <button  type="submit" class="btn btn-success w-50">Create</button>
 

@@ -3,6 +3,14 @@ from django.shortcuts import render,redirect
 from cart.models import CartItem,Cart
 from address.models import Address
 from orders.models import Order,OrderItem
+from django.http import HttpResponse
+# from django.template.loader import get_template
+# from xhtml2pdf import pisa
+from weasyprint import HTML
+from django.template.loader import render_to_string
+
+
+
 
 def checkout(request):
 
@@ -69,10 +77,16 @@ def place_order(request):
 
 
 def order_success_page(request,order_id):
+
     return render(request, 'user/order_success_page.html', {'order_id':order_id})
 
 def manage_orders(request):
-    orders = Order.objects.filter(user=request.user).order_by('-created_at')
+
+    query = request.GET.get('q')
+    if query:
+        orders = Order.objects.filter(order_id__icontains=query, user=request.user)
+    else:
+        orders = Order.objects.filter(user=request.user).order_by('-created_at')
     return render(request, 'user/manage_orders.html', {'orders':orders})
 
 
@@ -95,10 +109,17 @@ def cancel_order(request,order_id):
 
 def return_request(request,order_id):
     order = Order.objects.get(order_id=order_id)
+    items = OrderItem.objects.filter(order=order)
+
     if request.method == 'POST':
         reason = request.POST.get('reason')
         order.order_status = 'return_requested'
         order.reason_for_return = reason
+
+        for item in items:
+            item.variant.stock += item.quantity
+            item.variant.save()
+
         order.save()
         return redirect ("order_details", order_id=order_id)
 
@@ -115,7 +136,7 @@ def admin_order_details(reuqest,order_id):
     order_statuses = dict(Order.ORDER_STATUS)
 
     status_index = list(order_statuses.keys()).index(order.order_status)
-    order_statuses_to_display = Order.ORDER_STATUS [status_index+1:-1] #to remove final value as requst_retrun and the current status
+    order_statuses_to_display = Order.ORDER_STATUS [status_index+1:]     
     print(order_statuses_to_display)
 
     context = {
@@ -138,3 +159,18 @@ def change_order_status(request, order_id):
 
     return redirect('admin_order_details',order_id=order_id)
 
+
+
+def generate_invoice_pdf(request,order_id):
+    
+    order = Order.objects.get(order_id=order_id)
+    items = OrderItem.objects.filter(order=order)
+    context = {'order':order, 'items':items}
+    
+    html_string = render_to_string('user/invoice2.html', context)
+    html = HTML(string=html_string)
+    pdf = html.write_pdf()
+
+    response = HttpResponse(pdf, content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="invoice_{order.order_id}"'
+    return response

@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 import re
 from django.contrib import messages
 from .models import userProfile
+from category.models import Category
 
 
 
@@ -87,7 +88,10 @@ def user_logout(request):
 
 @never_cache
 def home(request):
-    return render(request,'user/index.html')
+
+    categories = Category.objects.all()
+
+    return render(request,'user/index.html',{'categories':categories})
 
 def about(request):
     return render(request,'user/about.html')    

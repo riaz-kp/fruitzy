@@ -12,6 +12,8 @@ urlpatterns = [
         path('admin_orders',views.admin_orders, name='admin_orders'),
         path('admin_order_details/<str:order_id>',views.admin_order_details,name='admin_order_details'),
         path('change_order_status/<str:order_id>',views.change_order_status,name='change_order_status'),
+        path('generate_invoice_pdf/<str:order_id>',views.generate_invoice_pdf,name='generate_invoice_pdf'),
+
 
 
 

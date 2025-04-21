@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Invoice #{{ order.order_id }}</title>
+    <style>
+        body { font-family: 'DejaVu Sans', sans-serif;  }
+        .container { width: 100%; max-width: 95vh; margin: auto; }
+        .card { border: 1px solid #ddd; border-radius: 10px; padding: 30px; box-shadow: 0 0 10px #ccc; }
+        h2, h5 { text-align: center; margin-bottom: 20px; }
+        .text-end { text-align: right; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #555; padding: 10px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        hr { margin: 30px 0; }
+        .info { margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="card">
+            <h2>Invoice</h2>
+
+            <!-- Order Info -->
+            <div class="info">
+                <p><strong>Order ID:</strong> #{{ order.order_id }}</p>
+                <p><strong>Placed On:</strong> {{ order.created_at|date:"F j, Y, g:i a" }}</p>
+                <p><strong>Customer:</strong> {{ order.user.username }}</p>
+            </div>
+
+            <!-- Shipping Address -->
+            <h5>Shipping Address</h5>
+            <p>{{ order.shipping_address }}</p>
+
+            <hr>
+
+            <!-- Items Table -->
+            <table>
+                <thead>
+                    <tr>
+                        <th>S.No.</th>
+                        <th>Product</th>
+                        <th>Ripeness</th>
+                        <th>Quantity</th>
+                        <th>Price</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in order.items.all %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td> <!-- Serial Number -->
+                        <td>{{ item.variant.product }}</td>
+                        <td>{{ item.variant.ripeness }}</td>
+                        <td>{{ item.quantity }}</td>
+                        <td>₹{{ item.price }}</td>
+                        <td>₹{{ item.item_total }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <hr>
+
+            <!-- Totals -->
+            <div class="text-end">
+                <p><strong>Subtotal:</strong> ₹{{ order.total_amount }}</p>
+                <p><strong>Shipping:</strong> ₹{{ order.shipping_charge }}</p>
+                <h5><strong>Grand Total:</strong> ₹{{ order.grand_total }}</h5>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

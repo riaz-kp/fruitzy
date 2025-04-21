@@ -44,7 +44,7 @@ class Variant(models.Model):
     ]
 
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="variants")  # ForeignKey for relation
-    ripeness = models.CharField(max_length=20, choices=RIPENESS_CHOICES, blank=True, null=True)
+    ripeness = models.CharField(max_length=20, choices=RIPENESS_CHOICES, blank=True, default='Semi-Ripe', null=True)
     # organic = models.BooleanField(default=False , null=True)
     stock = models.PositiveIntegerField(default=0 , null=True)
     is_active = models.BooleanField(default=True)  

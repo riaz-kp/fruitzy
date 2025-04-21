@@ -1,0 +1,49 @@
+
+{% extends 'user/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4">Your Wishlist</h2>
+    {% if wishlist_items %}
+    <div class="table-responsive">
+        <table class="table table-bordered align-middle text-center">
+            <thead class="table-light">
+                <tr>
+                    <th>Image</th>
+                    <th>Name</th>
+                    <th>Price</th>
+                    <th>Add to Cart</th>
+                    <th>Remove</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in wishlist_items %}
+                <tr>
+                    <td>
+                        <img src="{{ item.product.variants.first.images.first.image.url }}" alt="{{ item.product.name }}" width="80">
+                    </td>
+                    <td>{{ item.product.product_name }}</td>
+                    <td>₹{{ item.product.price }}</td>
+                    <td>
+                        <form action="{% url 'product_desc' item.product.variants.first.id %}" method="POST">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-success btn-sm">See availalbe options</button>
+                        </form>
+                    </td>
+                    <td>
+                        <form action="{% url 'remove_from_wishlist' item.id %}" method="POST">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger btn-sm">Remove</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p class="text-muted">Your wishlist is empty.</p>
+    {% endif %}
+</div>
+{% endblock %}

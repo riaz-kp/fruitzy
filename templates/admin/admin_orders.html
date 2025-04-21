@@ -2,13 +2,7 @@
 {% load static %}
 
 {% block content %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manage Orders</title>
-    <!-- Tailwind CSS CDN -->
+
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         /* Custom styles for enhanced UI */
@@ -40,7 +34,6 @@
             transform: translateY(-1px);
         }
     </style>
-</head>
 <body class="bg-gray-100 font-sans">
     <div class="container2 w-full m-3   ">
         <!-- Header -->
@@ -65,9 +58,9 @@
                         <td class="px-6 py-4 text-gray-700">{{ order.order_id }}</td>
                         <td class="px-6 py-4 text-gray-700">{{ order.user.username }}</td>
                         <td class="px-6 py-4 text-gray-700">{{ order.created_at|date:"M d, Y" }}</td>
-                        <td class="px-6 py-4 text-gray-700">{{ order.grand_total }}</td>
+                        <td class="px-6 py-4 text-gray-700">₹{{ order.grand_total }}</td>
                         <td class="px-6 py-4">
-                            <span class="px-3 py-1 text-sm font-medium text-black rounded-full"> 
+                            <span class=" py-1 text-sm font-medium text-black rounded-full"> 
                                 {{ order.order_status }}
                             </span>
                         </td>

@@ -5,10 +5,10 @@
 
 
 {% block content %}
-<div class="container  my-5">
-    <div class="card shadow rounded">
-        <div class="card-body">
-            <h2 class="card-title  text-primary">Order Details</h2>
+<div class="container ">
+    <div class="">
+        <!-- <div class="card-body"> -->
+            <h2 class="  text-primary">Order Details</h2>
 
             <ul class="list-group list-group-flush mb-4">
                 <li class="list-group-item"><strong>Order ID:</strong> {{ order.order_id }}</li>
@@ -20,7 +20,9 @@
                         <span class="badge bg-success">{{ order.order_status|capfirst }}</span>
                     {% endif %}
                 </li>
-                
+                {% if order.reason_for_return %}
+                <li class="list-group-item"><strong>Reason for return:</strong> {{ order.reason_for_return }}</li>
+                {% endif %}
                 <li class="list-group-item"><strong>User:</strong> {{ order.user.username }}</li>
                 <li class="list-group-item"><strong>Date:</strong> {{ order.created_at }}</li>
                 <li class="list-group-item"><strong>Shipping Charge:</strong> ₹{{ order.shipping_charge }}</li>
@@ -38,6 +40,7 @@
                             <th>Product</th>
                             <th>Variant</th>
                             <th>Quantity</th>
+                            <th>Available qty</th>
                             <th>Price</th>
                             <th>Total</th>
 
@@ -48,7 +51,8 @@
                         <tr>
                             <td>{{ item.variant.product.product_name }}</td>
                             <td>{{ item.variant.ripeness }}</td>
-                            <td>{{ item.quantity }}</td>
+                            <td>{{ item.quantity }} {{item.variant.product.product_unit}}</td>
+                            <td>{{ item.variant.stock }}{{item.variant.product.product_unit}}</td>
                             <td>₹{{ item.price }}</td>
                             <td>₹{{ item.item_total }}</td>
 

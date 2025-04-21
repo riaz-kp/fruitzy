@@ -36,8 +36,11 @@
         <h5>Shipping Address</h5>
         <p>{{ order.shipping_address }}</p>
 
+        <a href="{% url 'generate_invoice_pdf' order.order_id %}" class="btn btn-sm w-50     btn-success">
+            Download Invoice (PDF)
+        </a>
         <hr>
-
+        
         <!-- Ordered Items -->
         <h5 class="mb-3">Items</h5>
         <table class="table table-bordered">
@@ -70,7 +73,7 @@
             <div class="text-end">
                 <p><strong>Subtotal:</strong> ₹{{ order.total_amount }}</p>
                 <p><strong>Shipping:</strong> ₹{{ order.shipping_charge }}</p>
-                <h5><strong>Grand Total:</strong> ₹{{ order.grand_total }}</h5>
+                <h3><strong>Grand Total:</strong> ₹{{ order.grand_total }}</h5>
             </div>
         </div>
 

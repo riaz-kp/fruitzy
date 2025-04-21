@@ -14,25 +14,26 @@ def category_list (request):
     return render (request,'admin/category.html', context)
 
 
+
 @login_required
 def create_category (request):
-    # context = {
-    #     'category_unit' : Category.UNIT_CHOICES
-    # }
 
     if request.method == 'POST':
         category_name = request.POST.get('category_name').strip()
-        # category_unit = request.POST.get('category_unit')
+        category_image = request.FILES.get('category_image')
 
         if Category.objects.filter(category_name__iexact=category_name).exists():
             messages.error(request, f"The category name '{category_name}' already exists.")
             return redirect('admin_category')
 
-        category = Category.objects.create(category_name=category_name )
+        category = Category.objects.create(category_name=category_name, category_image=category_image )
         category.save()
         return redirect('admin_category')
 
     return render(request,'admin/create_category.html' )
+
+
+
 
 
 @login_required
@@ -43,6 +44,8 @@ def edit_category(request, category_id):
 
     if request.method == 'POST':
         category_name = request.POST.get('category_name')
+        category_image = request.FILES.get('category_image')
+
 
         if Category.objects.exclude(id=category_id).filter(category_name__iexact=category_name).exists():
             messages.error(request, 'Category name already exists')
@@ -55,6 +58,7 @@ def edit_category(request, category_id):
         category_name = category_name.title()  
      
         category.category_name = category_name
+        category.category_image = category_image
         category.save()
 
         messages.success(request, 'Category updated successfully.')

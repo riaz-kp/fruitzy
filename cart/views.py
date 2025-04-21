@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404,redirect
 from django.http import JsonResponse
 from products.models import Product, Variant
+from wishlist.models import Wishlist, WishlistItems
 from .models import Cart, CartItem
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
@@ -13,9 +14,18 @@ def add_to_cart (request, variant_id):
     # cart = request.user.cart
     cart, created = Cart.objects.get_or_create(user=request.user)
     cart_item, item_created = CartItem.objects.get_or_create(cart=cart, variant=variant)  #cart_item stores CartItem object and item_created Boolean (True if new item crearted False if already existed)
-
+    print(cart_item)
     cart_item.save()
     
+
+    try:
+        wishlist = Wishlist.objects.get(user=request.user)
+        wishlist_item = WishlistItems.objects.get(wishlist=wishlist,product=variant.product.id )
+        wishlist_item.delete()
+    except (Wishlist.DoesNotExist, WishlistItems.DoesNotExist):
+        pass
+        
+
     if not item_created:
         cart_item.quantity += 1
         cart_item.save()

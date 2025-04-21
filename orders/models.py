@@ -17,8 +17,8 @@ class Order(models.Model):
         ('out_of_delivery','out of delivery'),
         ('cancelled','cancelled'),
         ('delivered','delivered'),
-        ('returned','returned'),
         ('return_requested','return requested'),
+        ('returned','returned'),
     ]
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)

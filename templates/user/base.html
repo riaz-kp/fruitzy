@@ -83,7 +83,28 @@
 	          <!-- <li class="nav-item"><a href="blog.html" class="nav-link">Blog</a></li> -->
 	          <!-- <li class="nav-item"><a href="contact.html" class="nav-link">Contact</a></li> -->
             {% if user.is_authenticated %}
-	          <li class="nav-item  "><a href='{% url "view_cart" %}' class="nav-link"><span class="icon-shopping_cart"></span>[{{cart_items_count}}]</a></li>
+            
+	          <!-- <li class="nav-item  "><a id="wishlist_count" href='{% url "wishlist" %}' class="nav-link"><span class="icon-heart"></span>{{wishlist_items_count}}</a></li> -->
+            <li class="nav-item">
+              <a id="wishlist_link" href="{% url 'wishlist' %}" class="nav-link position-relative">
+                <span class="icon-heart fs-4"></span>
+                <span id="wishlist_count" class="position-absolute top-0 start-100 translate-middle  px-1 py-.5 rounded bg-primary text-white ">
+                  {{wishlist_items_count}}
+                </span>
+              </a>
+            </li>
+            
+
+	          <!-- <li class="nav-item  "><a href='{% url "view_cart" %}' class="nav-link"><span class="icon-shopping_cart"></span>[{{cart_items_count}}]</a></li> -->
+            <li class="nav-item">
+              <a href="{% url 'view_cart' %}" class="nav-link position-relative">
+                <span class="icon-shopping_cart fs-4"></span>
+                <span id="cart_count" class="position-absolute top-0 start-100 translate-middle px-1 py-0 rounded bg-primary text-white">
+                  {{cart_items_count}}
+                </span>
+              </a>
+            </li>
+            
             <li class="nav-item ">
               <a href="{% url 'user_profile' %}" class="nav-link">
                   <i class="bi bi-person-circle " style="font-size: 1rem;"></i> <!-- Bootstrap icon -->
