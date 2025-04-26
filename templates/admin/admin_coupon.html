@@ -1,0 +1,41 @@
+{% extends "admin/admin_base.html" %}
+{% load static %}
+{% block content %}
+
+<div class="container3 w-100 p-4 mt-4 ">
+    <h2>Coupon Management</h2>
+    <a href="{% url 'create_coupon' %}" class="btn btn-success  mb-3">+ Create Coupon</a>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Code</th>
+                <th>Discount</th>
+                <th>Min Purchase</th>
+                <th>Valid From</th>
+                <th>Valid To</th>
+                <th>Active</th>
+                <th>Usage Limit</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for coupon in coupons %}
+            <tr>
+                <td>{{ coupon.code }}</td>
+                <td>{{ coupon.discount_value }}</td>
+                <td>{{ coupon.min_purchase_amt }}</td>
+                <td>{{ coupon.valid_from }}</td>
+                <td>{{ coupon.valid_to }}</td>
+                <td><button class="btn btn-{%if coupon.active%}success">yes{%else%}danger">No{%endif%} </button></td>
+                <td>{{ coupon.usage_limit }}</td>
+                <td>
+                <a href="{% url 'edit_coupon' coupon.id %}" class="btn btn-danger btn-sm">Edit</a>
+                </td>
+            </tr>
+        {% empty %}
+            <tr><td colspan="8">No coupons available.</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

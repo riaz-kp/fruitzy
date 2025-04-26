@@ -8,7 +8,8 @@ from django.http import HttpResponse
 # from xhtml2pdf import pisa
 from weasyprint import HTML
 from django.template.loader import render_to_string
-
+from coupon.models import Coupon, UserCoupon
+from django.utils import timezone
 
 
 
@@ -17,33 +18,59 @@ def checkout(request):
     user_cart = Cart.objects.get(user=request.user)
     cart_items = CartItem.objects.filter(cart=user_cart)
     addresses = Address.objects.filter(user=request.user)
-
     total = sum(item.item_total for item in cart_items)
     shipping_charge = 50 if total<500 else 0
-    grand_total = total + shipping_charge
 
+    discount = 0
+    applied_coupon = None
+
+    coupon_id = request.session.get('applied_coupon_id')
+    if coupon_id:
+        try:
+            applied_coupon = Coupon.objects.get(id=coupon_id)
+            already_used = UserCoupon.objects.filter(user=request.user, coupon=applied_coupon, used=True).exists()
+
+            if applied_coupon.is_valid() and not already_used and total >= applied_coupon.min_purchase_amt:
+                discount = applied_coupon.discount_value
+            else:
+                request.session.pop('applied_coupon_id', None)
+        except Coupon.DoesNotExist:
+            pass
+
+    available_coupons = Coupon.objects.filter(active=True).exclude(
+        user_coupon__user =request.user,
+        user_coupon__used = True
+    )    
+
+
+    grand_total = total + shipping_charge - round(discount*.01)
+    
+    # grand_total = 0
+    
     for item in cart_items:
         if item.quantity > item.variant.stock:
             messages.error(request, f"{item.variant.product} {item.variant.ripeness} is available only {item.variant.stock}. Please update your cart")
-
-
 
     context = {
         'cart_items': cart_items,
         'addresses': addresses,
         'total' : total,
+        'applied_coupon': applied_coupon,
+        'available_coupons': available_coupons,
         'shipping_charge': shipping_charge,
         'grand_total': grand_total
     }
     return render (request,'user/checkout.html', context)
 
+
+
 def place_order(request):
     if request.method == 'POST':
-        address_id = request.POST.get('address')
         cart = Cart.objects.get(user=request.user)
         cart_items = CartItem.objects.filter(cart=cart)
-        address = Address.objects.get(id=address_id)
 
+        address_id = request.POST.get('address')
+        address = Address.objects.get(id=address_id)
         shipping_address = f'{address.address_name} as {address.full_name} {address.street_address} pin: {address.postal_code} Ph: {address.phone_number}'
 
         total = sum(item.item_total for item in cart_items)
@@ -106,6 +133,8 @@ def cancel_order(request,order_id):
     order.save()
     
     return redirect('order_details',order_id=order_id)
+
+
 
 def return_request(request,order_id):
     order = Order.objects.get(order_id=order_id)

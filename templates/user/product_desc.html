@@ -2,6 +2,39 @@
 {% load static %}
 
 {% block content %}
+<style>
+
+/* Main image container */
+.main-image-container {
+    position: relative;
+    width: 30rem;
+    height: auto;
+    overflow: hidden;
+}
+
+/* Zoomed image container */
+.zoomed-image-container {
+    position: absolute;
+    top: 0;
+    left: 100%; /* Position it to the right of the main image */
+    margin-left: 20px; /* Add some space between the main image and the zoomed image */
+    width: 30rem; /* Same width as the main image */
+    height: auto;
+    border: 1px solid #ccc;
+    background-color: #fff;
+    display: none; /* Hide by default */
+    overflow: hidden;
+}
+
+/* Zoomed image */
+.zoomed-image-container img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+</style>
+
 
 <div class="hero-wrap hero-bread" style="background-image: url('{% static "images/bg_1.jpg" %}');">
     <div class="container">
@@ -25,21 +58,22 @@
             <div class="col-lg-6 mb-5 ftco-animate">
                 <div class="gallery" style="display: flex;">
                     <!-- Thumbnails on the left -->
-                    <div class="thumbnail-container" style="display: flex; flex-direction: column; margin-right: 10px;">
+                    <div class="thumbnail-container" style="display: flex; flex-direction: column; margin-right: 2rem;">
                         {% for image in variant.images.all %}
-                            <img src="{{ image.image.url }}" class="img-fluid thumbnail" alt="{{ product.product_name }}" style="width: 50px; height: 50px; margin-bottom: 10px; cursor: pointer;" onclick="changeMainImage('{{ image.image.url }}')">
+                            <img src="{{ image.image.url }}" class="img-fluid thumbnail" alt="{{ product.product_name }}" style="width: 7rem; margin-bottom: 10px; cursor: pointer;" onclick="changeMainImage('{{ image.image.url }}')">
                         {% empty %}
-                            <img src="{% static 'images/bg_1.jpg' %}" class="img-fluid thumbnail" alt="No Image Available" style="width: 50px; height: 50px; margin-bottom: 10px; cursor: pointer;">
+                            <img src="{% static 'images/bg_1.jpg' %}" class="img-fluid thumbnail" alt="No Image Available" style="width: 7rem; margin-bottom: 10px; cursor: pointer;">
                         {% endfor %}
                     </div>
                     <!-- Main image -->
                     <div class="main-image-container">
                         {% if variant.images.all %}
-                            <img id="mainImage" src="{{ variant.images.first.image.url }}" class="img-fluid product-img" alt="{{ product.product_name }}" style="width: 100%; height: auto;">
+                            <img id="mainImage" src="{{ variant.images.first.image.url }}" class="img-fluid product-img" alt="{{ product.product_name }}" style="width: 30rem; height: auto;">
                         {% else %}
                             <img id="mainImage" src="{% static 'images/bg_1.jpg' %}" class="img-fluid product-img" alt="No Image Available" style="width: 100%; height: auto;">
                         {% endif %}
                     </div>
+                    <div id="zoomedImageContainer" class="zoomed-image-container"></div>
                 </div>
             </div>
 
@@ -144,6 +178,45 @@
        
         
     }
+
+    document.addEventListener('DOMContentLoaded', function() {
+    const mainImage = document.getElementById('mainImage');
+    const zoomedImageContainer = document.getElementById('zoomedImageContainer');
+
+    mainImage.addEventListener('mousemove', function(e) {
+        // Calculate the position of the mouse relative to the image
+        const rect = mainImage.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        // Calculate the zoom factor (adjust as needed)
+        const zoomFactor = 2;
+
+        // Calculate the background position for the zoomed image
+        const bgPosX = (x / mainImage.width) * 100;
+        const bgPosY = (y / mainImage.height) * 100;
+
+        // Create a new image element for the zoomed image
+        const zoomedImage = new Image();
+        zoomedImage.src = mainImage.src;
+        zoomedImage.style.transform = `scale(${zoomFactor})`;
+        zoomedImage.style.transformOrigin = `${bgPosX}% ${bgPosY}%`;
+
+        // Clear the zoomed image container and append the new zoomed image
+        zoomedImageContainer.innerHTML = '';
+        zoomedImageContainer.appendChild(zoomedImage);
+
+        // Show the zoomed image container
+        zoomedImageContainer.style.display = 'block';
+    });
+
+    mainImage.addEventListener('mouseleave', function() {
+        // Hide the zoomed image container when the mouse leaves the main image
+        zoomedImageContainer.style.display = 'none';
+    });
+});
+
+
 </script>
 
 

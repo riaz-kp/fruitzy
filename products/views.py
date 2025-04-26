@@ -233,3 +233,39 @@ def toggle_variant_status(request, variant_id):
     variant.save()
     messages.success(request, f"Variant status updated successfully!")
     return redirect('manage_variants', product_id=variant.product.id)
+
+
+def edit_variant(request, variant_id):
+    variant = get_object_or_404(Variant, id=variant_id)
+    product = variant.product
+
+    if request.method == "POST":
+        ripeness = request.POST.get("ripeness")
+        stock = request.POST.get("stock")
+        new_images = request.FILES.getlist("images")
+        keep_images = request.POST.getlist("keep_images")
+        delete_images = request.POST.getlist("delete_images")
+
+        # Update variant details
+        variant.ripeness = ripeness
+        variant.stock = int(stock)
+        variant.save()
+
+        # Delete marked images
+        if delete_images:
+            Images.objects.filter(id__in=delete_images).delete()
+
+        # Add new images
+        if new_images:
+            image_objects = [Images(image=image, variant=variant) for image in new_images]
+            Images.objects.bulk_create(image_objects)
+
+        messages.success(request, "Variant updated successfully.")
+        return redirect("manage_variants", product_id=product.id)
+
+    context = {
+        "product": product,
+        "variant": variant,
+        "ripeness_choices": Variant.RIPENESS_CHOICES,
+    }
+    return render(request, "admin/edit_variant.html", context)

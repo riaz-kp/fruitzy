@@ -14,6 +14,8 @@ urlpatterns = [
         path('adminn/products/<int:product_id>/variants/', views.manage_variants, name='manage_variants'),
         path('adminn/products/<int:product_id>/add_variant/', views.add_variant, name='add_variant'),
         path('adminn/products/variant/toggle/<int:variant_id>/', views.toggle_variant_status, name='toggle_variant_status'),
+        path('adminn/products/edit_variant/<int:variant_id>/', views.edit_variant, name='edit_variant'),
+
 
 
         

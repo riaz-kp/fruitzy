@@ -13,7 +13,11 @@
         {% for variant in variants %}
             <div class="col-lg-6 " >
                 <div class="card {% if not variant.is_active %}bg-secondary{% else %}bg-dark{% endif %} text-white mb-3">
-                    <div class="card-body text-center py-xl-5">
+                    <div class="card-body text-center py-xl-3">
+                        <div class="d-flex justify-content-end mb-5">
+                            <a class="btn btn-danger pt-1 top-0" href='{% url "edit_variant" variant.id %}'>Edit variant</a>
+
+                        </div>
                         <div class="mb-2">
                             {% for image in variant.images.all %}
                                 <img src="{{ image.image.url }}" alt="Variant Image" class="img-thumbnail" width="100">

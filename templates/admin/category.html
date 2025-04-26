@@ -28,7 +28,7 @@
                     <a href='{% url "edit_category" category.id %}' class="btn btn-primary btn-sm">Edit</a>
                     <!-- <button class="btn btn-danger btn-sm" onclick="confirmDelete(1)">Delete</button> -->
                     {% if category.is_listed %}
-                    <a href="{% url 'toggle_category_listing' category.id %}" class="btn btn-outline-danger btn-sm" style="padding: 10px 20px;">Unlist</a>
+                    <a href="{% url 'toggle_category_listing' category.id %}" class="btn btn-outline-danger btn-sm " style="padding: 10px 20px;">Unlist</a>
                 {% else %}
                     <a href="{% url 'toggle_category_listing' category.id %}" class="btn btn-outline-success btn-sm" style="padding: 10px 20px;">ReList</a>
                 {% endif %} 

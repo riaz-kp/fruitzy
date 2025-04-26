@@ -2,101 +2,290 @@
 {% load static %}
 
 {% block content %}
+<div class="container my-5">
+    <div class="card shadow p-4">
+        <h2 class="text-center mb-4">Checkout</h2>
+        
+        {% if error %}<div class="alert alert-danger">{{ error }}</div>{% endif %}
 
-    <div class="container mt-5">
-        <div class="card shadow p-4">
-            <h2 class="text-center mb-4">Checkout</h2>
-            
-            {% if error %}<div class="alert alert-danger">{{ error }}</div>{% endif %}
-            
-            <!-- <h3> Items</h3> -->
-            <table class="table table-bordered ">
-                <thead class="bg-success text-white">
-                    <tr>
-                        <th>Image</th>
-                        <th>Product</th>
-                        <th>Quantity</th>
-                        <th>Price</th>
-                        <th>Total</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for item in cart_items %}
-                    <tr>
-                        <td> <img class="img-fluid" style="width: 100px;  height: auto;" src="{{ item.variant.images.first.image.url }}" alt="{{ variant.ripeness }}"></td>
-                        <td><span class="font-weight-bold">{{ item.variant.product |capfirst }} </span>  {{ item.variant.ripeness}}</td>
-                        <td>{{ item.quantity }}</td>
-                        <td>{{ item.variant.product.price }}</td>
-                        <td>₹{{ item.item_total }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            <tfoot>
-                <tr>
-                    <td colspan="3" class="text-end fw-bold">Subtotal:</td>
-                    <td>₹{{ total }}</td>
-                </tr>
-                <tr>
-                    <td colspan="3" class="text-end fw-bold">Shipping:</td>
-                    <td>
-                        {% if shipping_charge == 0 %}
-                            <span class="text-success">Free</span>
-                        {% else %}
-                            ₹{{ shipping_charge }}
+        <!-- Order Summary Section -->
+        <div class="mb-4">
+            <h4 class="mb-3 border-bottom pb-2">Order Summary</h4>
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="bg-success text-white ">
+                        <tr class="">
+                            <th>Image</th>
+                            <th>Product</th>
+                            <th>Quantity</th>
+                            <th>Price</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody class="tbody">
+                        {% for item in cart_items %}
+                        <tr class="mx-auto h-25" >
+                            <td><img class="img-fluid rounded" style="width: 80px; object-fit: cover;" src="{{ item.variant.images.first.image.url }}" alt="{{ variant.ripeness }}"></td>
+                            <td>
+                                <span class="fw-bold">{{ item.variant.product |capfirst }}</span><br>
+                                <small class="text-muted">{{ item.variant.ripeness }}</small>
+                            </td>
+                            <td>{{ item.quantity }}</td>
+                            <td>₹{{ item.variant.product.price }}</td>
+                            <td>₹{{ item.item_total }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                    <tfoot class="border-top">
+                        <tr>
+                            <td colspan="4"  class="text-end fw-bold">Subtotal :</td>
+                            <td  >₹{{ total }}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="4" class="text-end fw-bold">Shipping :</td>
+                            <td>
+                                {% if shipping_charge == 0 %}
+                                    <span class="text-success">Free</span>
+                                {% else %}
+                                    ₹{{ shipping_charge }}
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% if discount %}
+                        <tr>
+                            <td colspan="4" class="text-end fw-bold">Coupon applied :</td>
+                            <td>₹{{ discount }}</td>
+                        </tr>
                         {% endif %}
-                    </td>
-                </tr>
-                <tr class="bg-light">
-                    <td colspan="3" class="text-end fw-bold">Grand Total:</td>
-                    <td><strong>₹{{ grand_total }}</strong></td>
-                </tr>
-            </tfoot>
-        </table>
+                        <tr class="bg-light">
+                            <td colspan="4" class="text-end fw-bold">Grand Total :</td>
+                            <td>₹<strong id="grandTotal">{{ grand_total }}</strong></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+
+
+
+        
+        <form method="POST" action='{% url "place_order" %}'>
+            {% csrf_token %}
             
-            
-            <h3>Select Address</h3>
-            <form method="POST" action='{% url "place_order" %}'>
-                {% csrf_token %}
-                <div class="mb-3">
-                    {% for address in addresses %}
-                        <div class="form-check d-flex align-items-center">
-                            <input class="form-check-input me-2" type="radio" name="address" 
-                                value="{{ address.id }}" id="address{{ address.id }}"
-                                {% if address.is_default %}checked{% endif %}>
-                            <label class="form-check-label me-auto" for="address{{ address.id }}">{{ address.address_name }}</label>
-                            <a href="{% url 'edit_address' address.id %}?next=checkout" class="btn btn-sm btn-outline-primary ml-2">
-                            <i class="fas fa-edit"></i>
+            <!-- Two Column Layout for Address/Coupon and Payment -->
+            <div class="row mt-4">
+                <!-- Left Column: Address and Coupon -->
+                <div class="col-md-7">
+                    <!-- Address Section -->
+                    <div class="card shadow-sm mb-4 rounded-3">
+                        <div class="card-header bg-light d-flex justify-content-between">
+                            <h5 class="mb-0"><i class="fas fa-map-marker-alt me-2 pr-2"></i>Delivery Address</h5>
+                            <a href="{% url 'add_address' %}?next=checkout" class="btn btn-sm btn-success ">
+                                <i class="fas fa-plus me-1"></i>Add New Address
                             </a>
                         </div>
-                    {% endfor %}
+                        <div class="card-body">
+                            <div class=" m-3">
+                                {% for address in addresses %}
+                                    <div class="form-check d-flex align-items-center mb-2 p-2 border-bottom {% if address.is_default %}bg-light{% endif %}">
+                                        <input class="form-check-input me-2 " type="radio" name="address" 
+                                            value="{{ address.id }}" id="address{{ address.id }}"
+                                            {% if address.is_default %}checked{% endif %}>
+                                        <label class="form-check-label me-auto" for="address{{ address.id }}">{{ address.address_name }}</label>
+                                        <a href="{% url 'edit_address' address.id %}?next=checkout" class="btn btn-sm btn-outline-primary ml-3">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                
+                        </div>
+                    </div>
+
+
+
+                    <!-- Coupon Section -->
+                    <div class="card shadow-sm mb-4">
+                        <div class="card-header bg-light">
+                            <h5 class="mb-0"><i class="fas fa-tag me-2 pr-3"></i>Apply Coupon</h5>
+                        </div>
+                        <div class="card-body">
+                           
+                                <div class="d-flex gap-2 align-items-center mb-3">
+                                    <select name="coupon_id" class="form-select" >
+                                        <option value="">Select a coupon</option>
+                                        {% for coupon in available_coupons %}
+                                            <option  value="{{ coupon.id }}">{{ coupon.code }} - Discount : ₹{{ coupon.discount_value }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <button type="button" id="applyButton" onclick="applyCoupon()" class="btn btn-primary text-white ml-2">Apply</button>
+                                </div>
+                            
+                            
+                            {% if applied_coupon %}
+                                <div class=" d-flex justify-content-between align-items-center mb-0">
+                                    <input hidden id="applied_id" type="text" value="{{applied_coupon.id}}">
+                                  
+                                    <span>Coupon <strong>{{ applied_coupon.code }}</strong> applied: ₹{{ applied_coupon.discount_value }}</span>
+                                    
+                                       
+                                        <a onclick="removeCoupon()" class="btn btn-sm btn-outline-danger">
+                                            <i class="fas fa-times me-1"></i>Remove
+                                        </a>
+                                    
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
                 </div>
                 
-                <!-- Create New Address Button -->
-                <a href="{% url 'add_address' %}?next=checkout" class="btn btn-sm btn-success ">+ Add New Address</a>
-                <br><br><hr><br>
-                
-                <h3>Payment Method</h3>
-                <div class="mb-3">
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="payment_method" value="COD" checked>
-                        <label class="form-check-label">Cash on Delivery (COD)</label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="payment_method" value="Razorpay" disabled>
-                        <label class="form-check-label text-muted">Razorpay (Coming Soon)</label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="payment_method" value="Wallet" disabled>
-                        <label class="form-check-label text-muted">Wallet (Coming Soon)</label>
+                <!-- Right Column: Payment Methods -->
+                <div class="col-md-5">
+                    <div class="card shadow-sm">
+                        <div class="card-header bg-light">
+                            <h5 class="mb-0"><i class="fas fa-credit-card me-2 pr-3"></i>Payment Method</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <div class="form-check payment-option p-3 border rounded mb-2 active">
+                                    <input class="form-check-input" type="radio" name="payment_method" value="COD" id="cod" checked>
+                                    <label class="form-check-label w-100" for="cod">
+                                        <div class="d-flex align-items-center">
+                                            <i class="fas fa-money-bill-wave fs-4 me-3 text-success pr-3"></i>
+                                            <div>
+                                                <span class="fw-bold">Cash on Delivery</span>
+                                                <p class="mb-0 text-muted small">Pay when you receive your order</p>
+                                            </div>
+                                        </div>
+                                    </label>
+                                </div>
+                                
+                                <div class="form-check payment-option p-3 border rounded mb-2 opacity-50">
+                                    <input class="form-check-input" type="radio" name="payment_method" value="Razorpay" id="razorpay" disabled>
+                                    <label class="form-check-label w-100" for="razorpay">
+                                        <div class="d-flex align-items-center">
+                                            <i class="fas fa-credit-card fs-4 me-3 text-primary pr-3"></i>
+                                            <div>
+                                                <span class="fw-bold">Razorpay</span>
+                                                <p class="mb-0 text-muted small">Coming Soon</p>
+                                            </div>
+                                        </div>
+                                    </label>
+                                </div>
+                                
+                                <div class="form-check payment-option p-3 border rounded opacity-50">
+                                    <input class="form-check-input" type="radio" name="payment_method" value="Wallet" id="wallet" disabled>
+                                    <label class="form-check-label w-100" for="wallet">
+                                        <div class="d-flex align-items-center">
+                                            <i class="fas fa-wallet fs-4 me-3 text-warning pr-3"></i>
+                                            <div>
+                                                <span class="fw-bold">Wallet</span>
+                                                <p class="mb-0 text-muted small">Coming Soon</p>
+                                            </div>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-4">
+                                
+                                <button type="submit" class="btn btn-success btn-lg w-100">
+                                    <i class="fas fa-check-circle me-2 mr-2"></i>Place Order
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                
-                <button type="submit" class="btn btn-success w-100">Place Order</button>
-            </form>
-        </div>
+            </div>
+        </form>
     </div>
-</body>
+</div>
+
+<style>
+    .payment-option:hover {
+        border-color: #28a745 !important;
+        background-color: #f8f9fa;
+    }
+    
+    .payment-option.active {
+        border-color: #28a745 !important;
+        background-color: #f8fff9;
+    }
+    
+    .form-check-input:checked {
+        background-color: #28a745;
+        border-color: #28a745;
+    }
+    .tbody tr td{
+        padding: 2px;
+        max-height: 10px;
+       
+    }
+</style>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+<script>
+    const csrftoken = '{{ csrf_token }}'; 
+function applyCoupon() {
+    const selectElement = document.querySelector('select[name="coupon_id"]');
+    const selectedCouponId = parseInt(selectElement.value);
+    const grandTotal = document.querySelector('#grandTotal')
+    const applyButton = document.querySelector("#applyButton")
+
+
+    if (isNaN(selectedCouponId)) {
+        alert('Please select a coupon first.');
+        return;
+    }
+
+    console.log(csrftoken);
+    
+    axios.post(`/apply_coupon/${selectedCouponId}/`,{},{
+        headers: {
+    'X-CSRFToken': csrftoken,
+    'Content-Type': 'application/json'
+  }
+    })
+        .then(function(response) {
+            if (response.data.success) {
+                // alert(response.data.discount);
+            grandTotal.textContent = parseInt(grandTotal.textContent) - parseInt(response.data.discount)
+            console.log(applyButton)
+            applyButton.textContent = "Remove";
+            applyButton.style.backgroundColor = "red"
+            applyButton.style.color = "white"
+
+
+            } else {
+                alert(response.data.message);
+            }
+        })
+        .catch(function(error) {
+            console.log(error);
+            
+            if(error.response.data.success){
+                alert("success andi")
+            }else{
+                alert('Failed to apply coupon.');
+                console.error('Error:', error);
+            }
+            
+        });
+}
+
+function removeCoupon(){
+    const grandTotal = document.querySelector('#grandTotal')
+    const id =document.getElementById('applied_id')
+    const total = Number(grandTotal.textContent)
+
+    console.log(id.value )
+    console.log(id)
+}
+</script>
+
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-
 {% endblock %}

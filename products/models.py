@@ -49,13 +49,13 @@ class Variant(models.Model):
     stock = models.PositiveIntegerField(default=0 , null=True)
     is_active = models.BooleanField(default=True)  
 
-
-   
-
-
 class Images(models.Model):
 
     # image = models.ImageField(upload_to='uploads/')
     image = CloudinaryField('image')  # Using CloudinaryField instead of ImageField
     variant = models.ForeignKey(Variant, on_delete=models.CASCADE, related_name="images")
 
+
+class Offer(models.Model):
+    category_offer = models.OneToOneField(Category, on_delete=models.CASCADE)
+    product_offer = models.OneToOneField(Product, on_delete=models.CASCADE)
