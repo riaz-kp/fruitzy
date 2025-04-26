@@ -22,34 +22,49 @@ def checkout(request):
     shipping_charge = 50 if total<500 else 0
 
     discount = 0
-    applied_coupon = None
+    applied_coupon = None 
 
-    coupon_id = request.session.get('applied_coupon_id')
+    # coupon_id = request.session.get('applied_coupon_id')
+    # coupon_id = UserCoupon.objects.get()
+    coupon_id = request.GET.get('applied_coupon_id')  
+
     if coupon_id:
         try:
             applied_coupon = Coupon.objects.get(id=coupon_id)
             already_used = UserCoupon.objects.filter(user=request.user, coupon=applied_coupon, used=True).exists()
 
+            print("applied coupon is: ",already_used)
+
             if applied_coupon.is_valid() and not already_used and total >= applied_coupon.min_purchase_amt:
                 discount = applied_coupon.discount_value
-            else:
-                request.session.pop('applied_coupon_id', None)
+            # else:
+            #     request.session.pop('applied_coupon_id', None)
+
+            print("discount is: ",discount)
         except Coupon.DoesNotExist:
             pass
-
     available_coupons = Coupon.objects.filter(active=True).exclude(
-        user_coupon__user =request.user,
-        user_coupon__used = True
-    )    
+        user_coupon__user=request.user,
+        user_coupon__used=True
+    )
+
+        # available_coupons = [coupon for coupon in available_coupons if coupon.is_valid()]
+    available_coupons = [
+        coupon for coupon in available_coupons
+        if coupon.is_valid() and total >= coupon.min_purchase_amt
+    ]
 
 
-    grand_total = total + shipping_charge - round(discount*.01)
-    
+    grand_total = total + shipping_charge - discount
     # grand_total = 0
     
     for item in cart_items:
         if item.quantity > item.variant.stock:
             messages.error(request, f"{item.variant.product} {item.variant.ripeness} is available only {item.variant.stock}. Please update your cart")
+
+    print("applied coupon:",applied_coupon)
+    print("grant total: ",grand_total)
+
 
     context = {
         'cart_items': cart_items,
@@ -75,6 +90,7 @@ def place_order(request):
 
         total = sum(item.item_total for item in cart_items)
         shipping_charge = 50 if total<500 else 0
+        
         grand_total = total + shipping_charge    
 
         order = Order.objects.create(

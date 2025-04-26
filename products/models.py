@@ -21,8 +21,8 @@ class Product(models.Model):
     created_at = models.DateField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     is_listed = models.BooleanField(default=True)
-
     product_unit = models.CharField(max_length=50, choices=UNIT_CHOICES, blank=True, null=True)  # e.g., kg, packet, etc.
+    product_offer = models.DecimalField(max_digits=10, null=True, decimal_places=2, blank=True)
 
 
     # def save(self, *args, **kwargs):
@@ -56,6 +56,6 @@ class Images(models.Model):
     variant = models.ForeignKey(Variant, on_delete=models.CASCADE, related_name="images")
 
 
-class Offer(models.Model):
-    category_offer = models.OneToOneField(Category, on_delete=models.CASCADE)
-    product_offer = models.OneToOneField(Product, on_delete=models.CASCADE)
+# class Offer(models.Model):
+#     category_offer = models.OneToOneField(Category, on_delete=models.CASCADE)
+#     product_offer = models.OneToOneField(Product, on_delete=models.CASCADE)

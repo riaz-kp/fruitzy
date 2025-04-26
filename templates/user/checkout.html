@@ -111,16 +111,7 @@
                         </div>
                         <div class="card-body">
                            
-                                <div class="d-flex gap-2 align-items-center mb-3">
-                                    <select name="coupon_id" class="form-select" >
-                                        <option value="">Select a coupon</option>
-                                        {% for coupon in available_coupons %}
-                                            <option  value="{{ coupon.id }}">{{ coupon.code }} - Discount : ₹{{ coupon.discount_value }}</option>
-                                        {% endfor %}
-                                    </select>
-                                    <button type="button" id="applyButton" onclick="applyCoupon()" class="btn btn-primary text-white ml-2">Apply</button>
-                                </div>
-                            
+                                
                             
                             {% if applied_coupon %}
                                 <div class=" d-flex justify-content-between align-items-center mb-0">
@@ -129,11 +120,25 @@
                                     <span>Coupon <strong>{{ applied_coupon.code }}</strong> applied: ₹{{ applied_coupon.discount_value }}</span>
                                     
                                        
-                                        <a onclick="removeCoupon()" class="btn btn-sm btn-outline-danger">
+                                        <a type="button" onclick="removeCoupon()" class="btn btn-sm btn-outline-danger">
                                             <i class="fas fa-times me-1"></i>Remove
                                         </a>
                                     
                                 </div>
+                                {% else %}
+                                <div class="d-flex justify-content-between align-items-center mb-0"  >
+                                    <h3 class="d-none"  id="couponInput"></h3>
+                                    <select name="coupon_id" class="form-select" id="couponSection">
+                                        <option value="">Select a coupon</option>
+                                        {% for coupon in available_coupons %}
+                                            <option  value="{{ coupon.id }}">{{ coupon.code }} - Discount : ₹{{ coupon.discount_value }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <button type="button" id="applyButton" onclick="applyCoupon()" class="btn btn-primary text-white ml-2">Apply</button>
+                                </div>
+
+
+                             
                             {% endif %}
                         </div>
                     </div>
@@ -228,61 +233,68 @@
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
 <script>
-    const csrftoken = '{{ csrf_token }}'; 
-function applyCoupon() {
-    const selectElement = document.querySelector('select[name="coupon_id"]');
-    const selectedCouponId = parseInt(selectElement.value);
-    const grandTotal = document.querySelector('#grandTotal')
-    const applyButton = document.querySelector("#applyButton")
 
+    const pathName = window.location.pathname
+    const csrftoken = '{{ csrf_token }}'; 
+
+    function applyCoupon() {
+            
+        const selectElement = document.getElementById('couponSection');
+        const selectedCouponId = parseInt(selectElement.value);
+        const grandTotal = document.getElementById('grandTotal');
+        const applyButton = document.getElementById('applyButton');
+        const couponSelector = document.getElementById('couponSelector');
+        const appliedCouponSection = document.getElementById('appliedCouponSection');
+        const appliedCouponText = document.getElementById('appliedCouponText');
+        const appliedIdInput = document.getElementById('applied_id');
 
     if (isNaN(selectedCouponId)) {
         alert('Please select a coupon first.');
         return;
     }
 
-    console.log(csrftoken);
     
-    axios.post(`/apply_coupon/${selectedCouponId}/`,{},{
+    axios.post(`/apply_coupon/${selectedCouponId}/`, {}, {
         headers: {
-    'X-CSRFToken': csrftoken,
-    'Content-Type': 'application/json'
-  }
+            'X-CSRFToken': csrftoken,
+            'Content-Type': 'application/json'
+        }
     })
-        .then(function(response) {
-            if (response.data.success) {
-                // alert(response.data.discount);
-            grandTotal.textContent = parseInt(grandTotal.textContent) - parseInt(response.data.discount)
-            console.log(applyButton)
+    .then(function(response) {
+        if (response.data.success) {
+            // Update UI
+            grandTotal.textContent = parseInt(grandTotal.textContent) - parseInt(response.data.discount);
+            selectElement.disabled = true;
             applyButton.textContent = "Remove";
-            applyButton.style.backgroundColor = "red"
-            applyButton.style.color = "white"
-
-
-            } else {
-                alert(response.data.message);
-            }
-        })
-        .catch(function(error) {
-            console.log(error);
+            applyButton.classList.remove('btn-primary');
+            applyButton.classList.add('btn-danger');
             
-            if(error.response.data.success){
-                alert("success andi")
-            }else{
-                alert('Failed to apply coupon.');
-                console.error('Error:', error);
-            }
-            
-        });
+            window.location.href = window.location.pathname + '?applied_coupon_id=' + selectedCouponId
+        } else {
+            alert(response.data.message);
+        }
+    })
+    .catch(function(error) {
+        console.error(error);
+        alert('Failed to apply coupon.');
+    });
 }
 
-function removeCoupon(){
-    const grandTotal = document.querySelector('#grandTotal')
-    const id =document.getElementById('applied_id')
-    const total = Number(grandTotal.textContent)
+function removeCoupon() {
+    const grandTotal = document.getElementById('grandTotal');
+    const selectElement = document.getElementById('couponSection');
+    const applyButton = document.getElementById('applyButton');
+    const appliedCouponSection = document.getElementById('appliedCouponSection');
+    const appliedIdInput = document.getElementById('applied_id');
 
-    console.log(id.value )
-    console.log(id)
+    const appliedCouponId = parseInt(appliedIdInput.value);
+    if (!appliedCouponId) {
+        return;
+    }
+    
+    
+    window.location.href = pathName
+    // window.location.reload()
 }
 </script>
 

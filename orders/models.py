@@ -2,6 +2,8 @@ from django.db import models
 from django.contrib.auth.models import User
 from products.models import Variant
 import uuid
+from coupon.models import Coupon,UserCoupon
+
 # Create your models here.
 
 class Order(models.Model):
@@ -32,6 +34,8 @@ class Order(models.Model):
     is_paid = models.BooleanField(default=False)
     order_id = models.CharField(max_length=20, unique=True, editable=False)
     reason_for_return = models.TextField(null=True, blank=True)
+    applied_coupon = models.OneToOneField(Coupon, on_delete=models.CASCADE , null=True, blank=True)
+
 
     def save(self, *args, **kwargs):
         if not self.order_id:

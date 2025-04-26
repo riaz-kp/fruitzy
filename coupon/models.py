@@ -10,7 +10,7 @@ class Coupon(models.Model):
     valid_from = models.DateField()
     valid_to = models.DateField()
     active = models.BooleanField(default=True)
-    usage_limit = models.PositiveBigIntegerField(default=1)
+    usage_limit = models.PositiveIntegerField(default=1)
     created_at = models.DateField(auto_now_add=True)
 
     def __str__(self):

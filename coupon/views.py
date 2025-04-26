@@ -72,17 +72,25 @@ def apply_coupon(request,coupon_id):
     try:
         coupon = Coupon.objects.get(id=coupon_id, active=True)
         if UserCoupon.objects.filter(user=request.user, coupon=coupon, used=True).exists():
+            
             return JsonResponse({
                 'success': False,
                 'message': 'You have already used this coupon'
             }, status = 400
             )
-        
+        user_coupon, created = UserCoupon.objects.get_or_create(
+            user=request.user,
+            coupon=coupon,
+            defaults={'used': False}
+        )
+
         request.session['applied_coupon_id'] = coupon.id
         return JsonResponse({
             'success': True,
             'message': f'Coupon {coupon.code} applied successfully',
-                'discount': coupon.discount_value
+            'discount': coupon.discount_value,
+            'couponCode':coupon.code
+           
         },status=200)
     
     except Coupon.DoesNotExist:
