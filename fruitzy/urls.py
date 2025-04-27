@@ -17,8 +17,7 @@ urlpatterns = [
     path('',include('address.urls')),
     path('',include('wishlist.urls')),
     path('',include('coupon.urls')),
-
-
+    path('',include('wallet.urls')),
 
     path('accounts/', include('allauth.urls')),   #all auth
 

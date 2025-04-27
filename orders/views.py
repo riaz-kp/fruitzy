@@ -11,6 +11,8 @@ from django.template.loader import render_to_string
 from coupon.models import Coupon, UserCoupon
 from django.utils import timezone
 
+from wallet.services import refund_order_to_wallet
+
 
 
 def checkout(request):
@@ -146,6 +148,8 @@ def cancel_order(request,order_id):
         item.variant.stock += item.quantity
         item.variant.save()
 
+    refund_order_to_wallet(user=request.user, amount=order.total_amount, order_id=order.order_id)
+    
     order.save()
     
     return redirect('order_details',order_id=order_id)
@@ -200,6 +204,9 @@ def change_order_status(request, order_id):
     new_status = request.POST.get('order_status')
     if new_status:
         order.order_status = new_status
+        if new_status == 'returned':
+            refund_order_to_wallet(user=request.user, amount=order.total_amount, order_id=order.order_id)
+            
         order.save()
 
     return redirect('admin_order_details',order_id=order_id)

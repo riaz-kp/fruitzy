@@ -34,13 +34,14 @@
             transform: translateY(-1px);
         }
     </style>
+    
 <body class="bg-gray-100 font-sans">
     <div class="container2 w-full m-3   ">
         <!-- Header -->
         <h2 class="text-3xl font-bold text-gray-800 mb-6">Manage Orders</h2>
 
         <!-- Table Container -->
-        <div class="table-container bg-white shadow-lg rounded-lg">
+        <div class="table-container bg-gray shadow-lg rounded-lg">
             <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-800 text-white">
                     <tr>
@@ -60,7 +61,7 @@
                         <td class="px-6 py-4 text-gray-700">{{ order.created_at|date:"M d, Y" }}</td>
                         <td class="px-6 py-4 text-gray-700">₹{{ order.grand_total }}</td>
                         <td class="px-6 py-4">
-                            <span class=" py-1 text-sm font-medium text-black rounded-full"> 
+                            <span class=" py-1 text-sm font-medium  rounded-full"> 
                                 {{ order.order_status }}
                             </span>
                         </td>

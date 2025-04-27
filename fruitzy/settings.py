@@ -56,6 +56,8 @@ INSTALLED_APPS = [
     'address',
     'wishlist',
     'coupon',
+    'wallet',
+
     'cloudinary',  #cloudinary
     'cloudinary_storage',
 

@@ -24,13 +24,6 @@ class Product(models.Model):
     product_unit = models.CharField(max_length=50, choices=UNIT_CHOICES, blank=True, null=True)  # e.g., kg, packet, etc.
     product_offer = models.DecimalField(max_digits=10, null=True, decimal_places=2, blank=True)
 
-
-    # def save(self, *args, **kwargs):
-    #     if self.category:
-    #         # self.unit = self.category.category_unit
-    #     super().save(*args, **kwargs)
-
-
     def __str__(self):
         return self.product_name
 
@@ -54,8 +47,3 @@ class Images(models.Model):
     # image = models.ImageField(upload_to='uploads/')
     image = CloudinaryField('image')  # Using CloudinaryField instead of ImageField
     variant = models.ForeignKey(Variant, on_delete=models.CASCADE, related_name="images")
-
-
-# class Offer(models.Model):
-#     category_offer = models.OneToOneField(Category, on_delete=models.CASCADE)
-#     product_offer = models.OneToOneField(Product, on_delete=models.CASCADE)
