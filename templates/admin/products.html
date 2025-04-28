@@ -64,6 +64,7 @@
             <th>Product Name</th>
             <th>Category</th>
             <th>Price</th>
+            <th>Offered Price</th>
             <th>Stock</th>
             <th>Image</th>
             <th>Action</th>
@@ -77,7 +78,9 @@
             <td>{{ product.id }}</td>
             <td>{{ product.product_name }}</td>
             <td>{{ product.category }}</td>
+            <td>{{ product.original_price }}</td>
             <td>{{ product.price }}</td>
+
             <td>{{ product.total_stock | default:0 }}{{ product.product_unit}}</td>
             <td>
               {% with product.variants.first.images.first as image %}

@@ -20,13 +20,14 @@ def create_category (request):
 
     if request.method == 'POST':
         category_name = request.POST.get('category_name').strip()
+        category_offer = request.POST.get('category_offer')
         category_image = request.FILES.get('category_image')
 
         if Category.objects.filter(category_name__iexact=category_name).exists():
             messages.error(request, f"The category name '{category_name}' already exists.")
             return redirect('admin_category')
 
-        category = Category.objects.create(category_name=category_name, category_image=category_image )
+        category = Category.objects.create(category_name=category_name, category_image=category_image, category_offer=category_offer )
         category.save()
         return redirect('admin_category')
 
@@ -44,6 +45,7 @@ def edit_category(request, category_id):
 
     if request.method == 'POST':
         category_name = request.POST.get('category_name')
+        category_offer = request.POST.get('category_offer')
         category_image = request.FILES.get('category_image')
 
 
@@ -58,7 +60,11 @@ def edit_category(request, category_id):
         category_name = category_name.title()  
      
         category.category_name = category_name
-        category.category_image = category_image
+        category.category_offer = category_offer
+        # category.category_image = category_image
+        if category_image:
+            category.category_image = category_image
+
         category.save()
 
         messages.success(request, 'Category updated successfully.')

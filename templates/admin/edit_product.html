@@ -4,7 +4,7 @@
 {% block content %}
 <div class="container">
     <h3 class="text-center">Edit Product</h3>
-    <form method="POST" action="{% url 'edit_product' product.id %}">
+    <form class="d-flex flex-column gap-4" method="POST" action="{% url 'edit_product' product.id %}">
         {% csrf_token %}
         
         <div class="form-group">
@@ -30,9 +30,16 @@
 
         <div class="form-group">
             <label for="price">Price</label>
-            <input type="number" id="price" name="price" step="0.01" value="{{ product.price }}" class="form-control">
+            <input type="number" id="price" name="price" step="0.01" value="{{ product.original_price }}" class="form-control">
         </div>
-<br><br>
+
+
+        <div class="form-group">
+            <label for="product_offer">Product Offer (%)</label>
+            <input type="number" id="product_offer" name="product_offer" step="0.01" value="{{ product.product_offer }}" class="form-control">
+        </div>
+
+<br>
         <button type="submit" class="btn btn-success">Update Product</button>
         <a href="{% url 'admin_products' %}" class="btn btn-secondary">Cancel</a>
     </form>

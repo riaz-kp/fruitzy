@@ -16,8 +16,7 @@ class Product(models.Model):
     product_name = models.CharField(max_length=255)
     description = models.TextField()
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="products" )
-    # available_stock = models.PositiveIntegerField()
-    price = models.DecimalField(max_digits=10, decimal_places=2)  
+    _price = models.DecimalField(max_digits=10, decimal_places=2)  
     created_at = models.DateField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     is_listed = models.BooleanField(default=True)
@@ -26,6 +25,29 @@ class Product(models.Model):
 
     def __str__(self):
         return self.product_name
+
+    @property
+    def price(self):
+        offers = []
+
+        if self.product_offer:
+            offers.append(self.product_offer)
+        if self.category and self.category.category_offer:
+            offers.append(self.category.category_offer)
+
+        if offers:
+            max_offer = max(offers)
+            discounted_price = self._price - (self._price * (max_offer/100))
+            return round(discounted_price,2)
+        return self._price
+    
+    @price.setter
+    def price(self, value):
+        self._price = value
+        
+    @property
+    def original_price(self):
+        return self._price
 
 
 class Variant(models.Model):
@@ -38,7 +60,6 @@ class Variant(models.Model):
 
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="variants")  # ForeignKey for relation
     ripeness = models.CharField(max_length=20, choices=RIPENESS_CHOICES, blank=True, default='Semi-Ripe', null=True)
-    # organic = models.BooleanField(default=False , null=True)
     stock = models.PositiveIntegerField(default=0 , null=True)
     is_active = models.BooleanField(default=True)  
 

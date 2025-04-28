@@ -2,6 +2,8 @@
 {% load static %}
 
 {% block content %}
+
+
 <div class="hero-wrap hero-bread" style="background-image: url('{% static "images/bg_1.jpg" %}');">
     <div class="container">
         <div class="row no-gutters slider-text align-items-center justify-content-center">
@@ -41,10 +43,15 @@
                     </a>
                     <div class="text py-3 pb-4 px-3 text-center">
                         <h3><a href="#">{{ product.product_name }}</a></h3>
-                        <div class="d-flex">
+                        <div class="d-flex ">
                             <div class="pricing">
                                 <p class="price"><span class="price-sale">₹ {{ product.price }}</span></p>
                             </div>
+                            {% if product.product_offer or product.category.category_offer %}
+                            <span class="old-price" style="text-decoration: line-through; color: gray;">
+                                ₹{{ product.original_price }}
+                            </span>
+                        {% endif %}
                         </div>
                         <div class="bottom-area d-flex px-3">
                             <div class="m-auto d-flex">

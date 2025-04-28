@@ -81,6 +81,10 @@
             <div class="col-lg-6 product-details pl-md-5 ftco-animate">
                 <h3>{{ product.product_name }}</h3>
                 <p class="price"><span>₹ {{ product.price }}</span></p>
+                
+                {% if product.product_offer or product.category.category_offer %}
+                <p class="price " ><span style="text-decoration: line-through;font-size: medium; color: gray;" >₹ {{ product.original_price }}</span></p>
+                {% endif %}
                 <p>{{ product.description }}</p>
 
                 <div class="row mt-4">

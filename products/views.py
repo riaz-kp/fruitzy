@@ -78,6 +78,8 @@ def create_product(request):
         category_id = request.POST.get("category")
         # available_stock = request.POST.get("available_stock")
         price = request.POST.get("price")
+        product_offer = request.POST.get('product_offer')
+
         # ripeness = request.POST.get('ripeness')
         images = request.FILES.getlist("images")
         # is_listed = request.POST.get("is_listed") == "on"
@@ -95,8 +97,9 @@ def create_product(request):
             description=description,
             category=category,
             price=price,
+            product_offer=product_offer,
             is_listed=True,
-            product_unit=product_unit
+            product_unit=product_unit,
         )
         
         variant = Variant.objects.create(
@@ -134,6 +137,7 @@ def edit_product(request, product_id):
         description = request.POST.get('description')
         category_id = request.POST.get('category')
         price = request.POST.get('price')
+        product_offer = request.POST.get('product_offer')
 
         if len(description) < 5:
             errors.append('Description must be less than 100 characters.')
@@ -156,6 +160,7 @@ def edit_product(request, product_id):
         product.description = description
         product.category_id = category_id
         product.price = price
+        product.product_offer = product_offer
         
         product.save()
 
